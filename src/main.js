@@ -1,4 +1,9 @@
 import './assets/main.css'
+import 'ant-design-vue/dist/reset.css';
+import 'bootstrap/dist/css/bootstrap-grid.min.css'
+import 'bootstrap/dist/css/bootstrap-utilities.min.css'
+
+import { Drawer } from 'ant-design-vue'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -7,6 +12,8 @@ import App from './App.vue'
 import router from './router'
 
 const app = createApp(App)
+
+app.use(Drawer)
 
 app.use(createPinia())
 app.use(router)
