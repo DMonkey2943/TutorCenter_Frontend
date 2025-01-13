@@ -28,9 +28,7 @@
   </div>
 
   <a-drawer v-model:open="open" title="DANH MỤC" placement="left">
-    <p>Some contents...</p>
-    <p>Some contents...</p>
-    <p>Some contents...</p>
+    <TheMenu></TheMenu>
   </a-drawer>
 
   <a-drawer v-model:open="open_user" title="ADMIN" placement="right">
@@ -42,6 +40,9 @@
 
 <script setup>
 import { ref } from "vue";
+
+import TheMenu from "./TheMenu.vue";
+
 const open = ref(false);
 const open_user = ref(false);
 const showDrawer = () => {

@@ -1,7 +1,7 @@
 <template>
   <a-menu
-    v-model:openKeys="state.openKeys"
-    v-model:selectedKeys="state.selectedKeys"
+    v-model:openKeys="openKeys"
+    v-model:selectedKeys="selectedKeys"
     mode="inline"
     :items="items"
     @click="onMenuClick"
@@ -10,12 +10,14 @@
 <script setup>
 import { reactive, h } from "vue";
 import { useRouter } from "vue-router";
+import { useMenuAdmin } from "@/stores/use-menu-admin";
+import { storeToRefs } from "pinia";
 
 const router = useRouter();
-const state = reactive({
-  selectedKeys: ["admin-dashboard"],
-  openKeys: [],
-});
+
+const store = useMenuAdmin();
+const { selectedKeys, openKeys } = storeToRefs(store);
+
 const items = reactive([
   {
     key: "admin-dashboard",
