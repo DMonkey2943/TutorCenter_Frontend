@@ -14,5 +14,18 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  server: {
+    port: 5173, // Đảm bảo frontend chạy trên cổng 5173
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000/', // Địa chỉ backend Laravel
+        changeOrigin: true, // Đảm bảo header Host được thay đổi
+      },
+      '/storage/public': {
+        target: 'http://localhost:8000/', // Địa chỉ backend Laravel
+        changeOrigin: true
+      }
+    }
   }
 })
