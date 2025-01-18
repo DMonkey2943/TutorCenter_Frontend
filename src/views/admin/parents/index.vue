@@ -1,7 +1,12 @@
 <template>
-  <!-- <h3>Trang quản lý phụ huynh</h3> -->
-  <!-- <button @click="getAllParents">Click to get all parents</button> -->
   <a-card title="QUẢN LÝ PHỤ HUYNH" style="width: 100%">
+    <div class="row mb-3">
+      <div class="col-12 d-flex justify-content-end">
+        <a-button type="primary">
+          <router-link :to="{ name: 'admin.parents.create' }">Thêm</router-link>
+        </a-button>
+      </div>
+    </div>
     <div class="row">
       <div class="col-12">
         <a-table :dataSource="parents" :columns="columns" :scroll="{ x: 576 }">

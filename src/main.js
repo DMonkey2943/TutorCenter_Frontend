@@ -3,7 +3,17 @@ import "ant-design-vue/dist/reset.css";
 import "bootstrap/dist/css/bootstrap-grid.min.css";
 import "bootstrap/dist/css/bootstrap-utilities.min.css";
 
-import { Drawer, List, Menu, Button, Card, Table, Modal } from "ant-design-vue";
+import {
+  Drawer,
+  List,
+  Menu,
+  Button,
+  Card,
+  Table,
+  Modal,
+  Input,
+  //   Message,
+} from "ant-design-vue";
 
 import { createApp } from "vue";
 import { createPinia } from "pinia";
@@ -20,6 +30,8 @@ app.use(Button);
 app.use(Card);
 app.use(Table);
 app.use(Modal);
+app.use(Input);
+// app.use(Message);
 
 app.use(createPinia());
 app.use(router);
