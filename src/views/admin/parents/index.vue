@@ -25,7 +25,11 @@
                 </a-button>
               </router-link>
               <span>
-                <a-button @click="showDeleteConfirm" type="primary" danger>
+                <a-button
+                  @click="deleteParent(record.id)"
+                  type="primary"
+                  danger
+                >
                   Xóa
                 </a-button>
               </span>
@@ -42,6 +46,7 @@ import { ref, onMounted } from "vue";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
 import ParentService from "@/services/parent.service";
 import { Modal } from "ant-design-vue";
+import message from "ant-design-vue/es/message";
 
 useMenuAdmin().onSelectedKeys(["admin-parents"]);
 
@@ -89,7 +94,7 @@ const getAllParents = async () => {
   }
 };
 
-const showDeleteConfirm = () => {
+const deleteParent = async (id) => {
   Modal.confirm({
     title: "Bạn có chắc sẽ xóa phụ huynh này?",
     // icon: createVNode(ExclamationCircleOutlined),
@@ -97,16 +102,22 @@ const showDeleteConfirm = () => {
     okText: "Xóa",
     okType: "danger",
     cancelText: "Hủy",
-    onOk() {
-      console.log("OK");
+    async onOk() {
+      try {
+        await ParentService.destroy(id);
+        getAllParents();
+        message.success("Xóa phụ huynh thành công");
+      } catch (error) {
+        console.log(error);
+      }
     },
     onCancel() {
-      console.log("Cancel");
+      Modal.destroyAll();
     },
   });
 };
 
-onMounted(() => {
-  getAllParents();
-});
+// onMounted(() => {
+getAllParents();
+// });
 </script>
