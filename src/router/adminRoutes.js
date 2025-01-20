@@ -13,7 +13,17 @@ export default [
       {
         path: "tutors",
         name: "admin.tutors",
-        component: () => import("../views/admin/tutors/Tutors.vue"),
+        component: () => import("../views/admin/tutors/index.vue"),
+      },
+      {
+        path: "tutors/create",
+        name: "admin.tutors.create",
+        component: () => import("../views/admin/tutors/create.vue"),
+      },
+      {
+        path: "tutors/:id/edit",
+        name: "admin.tutors.edit",
+        component: () => import("../views/admin/tutors/edit.vue"),
       },
       //   Quản lý phụ huynh
       {
