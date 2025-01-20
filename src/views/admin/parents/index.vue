@@ -17,25 +17,13 @@
               </span>
             </template>
             <template v-if="column.key === 'action'">
-              <span>
-                <a-button
-                  @click="showModal"
-                  type="primary"
-                  class="me-0 me-sm-2 mb-2 mb-sm-0"
-                >
+              <router-link
+                :to="{ name: 'admin.parents.edit', params: { id: record.id } }"
+              >
+                <a-button type="primary" class="me-0 me-sm-2 mb-2 mb-sm-0">
                   Sửa
                 </a-button>
-                <a-modal
-                  v-model:open="open"
-                  width="50%"
-                  title="Basic Modal"
-                  @ok="handleOk"
-                >
-                  <p>Some contents...</p>
-                  <p>Some contents...</p>
-                  <p>Some contents...</p>
-                </a-modal>
-              </span>
+              </router-link>
               <span>
                 <a-button @click="showDeleteConfirm" type="primary" danger>
                   Xóa
@@ -95,20 +83,10 @@ const columns = [
 const getAllParents = async () => {
   try {
     const response = await ParentService.index();
-    // console.log(a.data);
     parents.value = response.data;
   } catch (error) {
     console.log(error);
   }
-};
-
-const open = ref(false);
-const showModal = () => {
-  open.value = true;
-};
-const handleOk = (e) => {
-  console.log(e);
-  open.value = false;
 };
 
 const showDeleteConfirm = () => {

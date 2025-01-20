@@ -26,6 +26,11 @@ export default [
         name: "admin.parents.create",
         component: () => import("../views/admin/parents/create.vue"),
       },
+      {
+        path: "parents/:id/edit",
+        name: "admin.parents.edit",
+        component: () => import("../views/admin/parents/edit.vue"),
+      },
     ],
   },
 ];

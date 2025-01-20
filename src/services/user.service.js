@@ -1,7 +1,7 @@
 import createApiClient from "./api.service";
 
-class ParentService {
-  constructor(baseUrl = "/api/parents") {
+class UserService {
+  constructor(baseUrl = "/api/users") {
     this.api = createApiClient(baseUrl);
   }
 
@@ -26,4 +26,4 @@ class ParentService {
   }
 }
 
-export default new ParentService();
+export default new UserService();
