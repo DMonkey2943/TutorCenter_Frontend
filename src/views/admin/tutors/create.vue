@@ -1,0 +1,126 @@
+<template>
+  <a-card title="THÊM MỚI GIA SƯ" style="width: 100%">
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+        <div class="row mb-4">
+          <div class="col-12 col-sm-3 text-start text-sm-end">
+            <label for="">
+              <span class="text-danger">*</span>
+              <span>Họ tên:</span>
+            </label>
+          </div>
+          <div class="col-12 col-sm-9">
+            <a-input v-model:value="tutor.name" />
+            <div class="w-100"></div>
+            <small v-if="errors.name" class="text-danger">
+              {{ errors.name[0] }}
+            </small>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col-12 col-sm-3 text-start text-sm-end">
+            <label for="">
+              <span class="text-danger">*</span>
+              <span>Email:</span>
+            </label>
+          </div>
+          <div class="col-12 col-sm-9">
+            <a-input v-model:value="tutor.email" />
+            <div class="w-100"></div>
+            <small v-if="errors.email" class="text-danger">
+              {{ errors.email[0] }}
+            </small>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col-12 col-sm-3 text-start text-sm-end">
+            <label for="">
+              <span class="text-danger">*</span>
+              <span>SĐT:</span>
+            </label>
+          </div>
+          <div class="col-12 col-sm-9">
+            <a-input v-model:value="tutor.phone" />
+            <div class="w-100"></div>
+            <small v-if="errors.phone" class="text-danger">
+              {{ errors.phone[0] }}
+            </small>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col-12 col-sm-3 text-start text-sm-end">
+            <label for="">
+              <span class="text-danger">*</span>
+              <span>Mật khẩu:</span>
+            </label>
+          </div>
+          <div class="col-12 col-sm-9">
+            <a-input-password v-model:value="tutor.password" />
+            <div class="w-100"></div>
+            <small v-if="errors.password" class="text-danger">
+              {{ errors.password[0] }}
+            </small>
+          </div>
+        </div>
+        <!-- <div class="row mb-4">
+          <div class="col-12 col-sm-3 text-start text-sm-end">
+            <label for="">
+              <span class="text-danger">*</span>
+              <span>Nhập lại mật khẩu:</span>
+            </label>
+          </div>
+          <div class="col-12 col-sm-9">
+            <a-input-password v-model:value="tutor.cofirmPassword" />
+          </div>
+        </div> -->
+        <div class="row mt-1">
+          <div class="col-12 d-grid d-sm-flex justify-content-sm-end mx-auto">
+            <a-button class="me-sm-2 mb-2">
+              <router-link :to="{ name: 'admin.tutors' }">
+                <span>Hủy</span>
+              </router-link>
+            </a-button>
+            <a-button type="primary" html-type="submit" @click="createTutor">
+              <span>Lưu</span>
+            </a-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a-card>
+</template>
+<script setup>
+import { watch, ref, reactive, toRefs } from "vue";
+import { useRouter } from "vue-router";
+import { useMenuAdmin } from "@/stores/use-menu-admin";
+import AuthService from "@/services/auth.service";
+import message from "ant-design-vue/es/message";
+
+useMenuAdmin().onSelectedKeys(["admin-tutors"]);
+
+const router = useRouter();
+const tutor = reactive({
+  name: "",
+  email: "",
+  phone: "",
+  password: "",
+  //   cofirmPassword: "",
+  role: "tutor",
+});
+
+const errors = ref({});
+
+const createTutor = async () => {
+  try {
+    const result = await AuthService.register(tutor);
+    console.log(result);
+    if (result.success) {
+      message.success("Thêm mới gia sư thành công");
+      router.push({ name: "admin.tutors" });
+    }
+  } catch (error) {
+    console.log(error);
+    errors.value = error.response.data.errors;
+  }
+};
+</script>
