@@ -25,6 +25,22 @@ export default [
         name: "admin.tutors.edit",
         component: () => import("../views/admin/tutors/edit.vue"),
       },
+      //   Quản lý gia sư
+      {
+        path: "tutors/profile",
+        name: "admin.tutors.profile",
+        component: () => import("../views/admin/tutorsProfile/index.vue"),
+      },
+      {
+        path: "tutors/profile/:id/edit",
+        name: "admin.tutors.profile.edit",
+        component: () => import("../views/admin/tutorsProfile/edit.vue"),
+      },
+      {
+        path: "tutors/profile/:id",
+        name: "admin.tutors.profile.detail",
+        component: () => import("../views/admin/tutorsProfile/detail.vue"),
+      },
       //   Quản lý phụ huynh
       {
         path: "parents",

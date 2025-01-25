@@ -32,6 +32,12 @@ const items = reactive([
     pathName: "admin.tutors",
   },
   {
+    key: "admin-tutors-profile",
+    label: "Quản lý hồ sơ gia sư",
+    title: "Quản lý hồ sơ gia sư",
+    pathName: "admin.tutors.profile",
+  },
+  {
     key: "admin-parents",
     label: "Quản lý phụ huynh",
     title: "Quản lý phụ huynh",
