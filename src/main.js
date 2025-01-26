@@ -12,6 +12,14 @@ import {
   Table,
   Modal,
   Input,
+  Avatar,
+  Select,
+  Radio,
+  DatePicker,
+  // Grid,
+  Row,
+  Col,
+  Checkbox,
   //   Message,
 } from "ant-design-vue";
 
@@ -31,6 +39,14 @@ app.use(Card);
 app.use(Table);
 app.use(Modal);
 app.use(Input);
+app.use(Avatar);
+app.use(Select);
+app.use(Radio);
+app.use(DatePicker);
+app.use(Row);
+app.use(Col);
+// app.use(Grid);
+app.use(Checkbox);
 // app.use(Message);
 
 app.use(createPinia());
