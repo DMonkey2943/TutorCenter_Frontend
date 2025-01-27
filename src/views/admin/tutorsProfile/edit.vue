@@ -10,14 +10,22 @@
             <div class="col-12 d-flex justify-content-center mb-3">
               <a-avatar shape="square" :size="200">
                 <template #icon>
-                  <img src="../../../assets/images/favicon4.png" alt="Avatar" />
+                  <img :src="previewImage || fullAvatarUrl" alt="Avatar" />
                 </template>
               </a-avatar>
             </div>
             <div class="col-12 d-flex justify-content-center">
-              <a-button type="primary">
-                <span>Chọn ảnh đại diện</span>
-              </a-button>
+              <a-upload
+                name="avatar"
+                :before-upload="beforeUpload"
+                :show-upload-list="false"
+                @change="handleChange"
+              >
+                <a-button>
+                  <upload-outlined></upload-outlined>
+                  Cập nhật ảnh đại diện
+                </a-button>
+              </a-upload>
             </div>
           </div>
         </div>
@@ -321,6 +329,7 @@ const tutorProfile = reactive({
   level_id: "",
   major: "",
   school: "",
+  avatar: "",
   subjects: [],
   grades: [],
   districts: [],
@@ -335,6 +344,15 @@ const _tuitions = ref([]);
 
 const errors = ref({});
 
+// Host của backend
+const backendHost = "http://127.0.0.1:8000";
+const fullAvatarUrl = computed(() => {
+  if (!tutorProfile.avatar) {
+    return null;
+  }
+  return `${backendHost}/storage/${tutorProfile.avatar}`;
+});
+
 const getTutorProfile = async () => {
   try {
     const id = route.params.id;
@@ -348,6 +366,7 @@ const getTutorProfile = async () => {
     tutorProfile.level_id = dataProfile?.level?.id ?? null;
     tutorProfile.major = dataProfile.major ?? null;
     tutorProfile.school = dataProfile.school ?? null;
+    tutorProfile.avatar = dataProfile.avatar ?? null;
     tutorProfile.subjects = Array.isArray(dataProfile.subjects)
       ? dataProfile.subjects.map((subject) => subject.id)
       : [];
@@ -418,24 +437,74 @@ const filterOption = (input, option) => {
   return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
+const beforeUpload = (file) => {
+  const isImage = file.type.startsWith("image/");
+  const isLt2M = file.size / 1024 / 1024 < 2;
+
+  if (!isImage) {
+    message.error("Bạn chỉ có thể tải lên tệp ảnh!");
+  }
+  if (!isLt2M) {
+    message.error("Ảnh phải nhỏ hơn 2MB!");
+  }
+
+  return isImage && isLt2M;
+};
+const previewImage = ref("");
+const handleChange = (info) => {
+  const file = info.file.originFileObj;
+  if (file && beforeUpload(file)) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewImage.value = e.target.result;
+      tutorProfile.avatar = file;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
 const updateTutorProfile = async () => {
   try {
     const id = route.params.id;
-    const formattedData = {
-      ...tutorProfile,
-      birthday: tutorProfile.birthday
-        ? dayjs(tutorProfile.birthday).format("YYYY-MM-DD")
-        : null,
-    };
-    const result = await TutorService.update(id, formattedData);
-    // console.log(result);
+
+    // Tạo FormData
+    const formData = new FormData();
+
+    // Thêm các trường vào FormData
+    Object.entries(tutorProfile).forEach(([key, value]) => {
+      if (key === "avatar" && value instanceof File) {
+        formData.append(key, value); // Thêm ảnh
+      } else if (key === "birthday") {
+        formData.append(
+          key,
+          value ? dayjs(value).format("YYYY-MM-DD") : null // Format ngày
+        );
+      } else if (
+        key === "districts" ||
+        key === "grades" ||
+        key === "subjects"
+      ) {
+        value?.forEach((item) => {
+          formData.append(key + "[]", item); // Thêm mỗi phần tử trong mảng
+        });
+      } else {
+        formData.append(key, value); // Thêm các trường khác
+      }
+    });
+
+    formData.append("_method", "PATCH");
+
+    console.log(formData);
+
+    const result = await TutorService.update(id, formData);
+
     if (result.success) {
       message.success("Cập nhật hồ sơ gia sư thành công");
       router.push({ name: "admin.tutors.profile" });
     }
   } catch (error) {
-    console.log(error);
-    errors.value = error.response.data.errors;
+    console.error(error);
+    errors.value = error.response?.data?.errors || {};
   }
 };
 

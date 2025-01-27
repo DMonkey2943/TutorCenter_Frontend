@@ -18,7 +18,13 @@ class TutorService {
   }
 
   async update(id, request) {
-    return (await this.api.patch(`/${id}`, request)).data;
+    return (
+      await this.api.post(`/${id}`, request, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+    ).data;
   }
 
   async destroy(id) {

@@ -20,8 +20,11 @@ import {
   Row,
   Col,
   Checkbox,
+  Upload,
   //   Message,
 } from "ant-design-vue";
+
+import { UploadOutlined } from "@ant-design/icons-vue";
 
 import { createApp } from "vue";
 import { createPinia } from "pinia";
@@ -48,6 +51,9 @@ app.use(Col);
 // app.use(Grid);
 app.use(Checkbox);
 // app.use(Message);
+app.use(Upload);
+
+app.component("UploadOutlined", UploadOutlined);
 
 app.use(createPinia());
 app.use(router);

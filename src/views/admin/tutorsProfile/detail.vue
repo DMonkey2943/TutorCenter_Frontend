@@ -8,7 +8,12 @@
 
     <div v-if="status" class="row">
       <div class="col-12 col-md-4">
-        <span>Hình</span>
+        <!-- <span>Ảnh đại diện</span> -->
+        <a-avatar shape="square" :size="200">
+          <template #icon>
+            <img :src="fullAvatarUrl" alt="Avatar" />
+          </template>
+        </a-avatar>
       </div>
       <div class="col-12 col-md-8">
         <div>
@@ -92,7 +97,7 @@
   </a-card>
 </template>
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
@@ -106,6 +111,15 @@ const tutorProfile = ref({});
 const tutorName = ref("");
 const status = ref(false);
 
+// Host của backend
+const backendHost = "http://127.0.0.1:8000";
+const fullAvatarUrl = computed(() => {
+  if (!tutorProfile.value.avatar) {
+    return null;
+  }
+  return `${backendHost}/storage/${tutorProfile.value.avatar}`;
+});
+
 const getTutorProfile = async () => {
   try {
     const id = route.params.id;
@@ -115,7 +129,7 @@ const getTutorProfile = async () => {
     }
     tutorProfile.value = result.data;
     tutorName.value = result.data.user.name;
-    console.log(tutorProfile.value);
+    // console.log(tutorProfile.value);
   } catch (error) {
     console.log(error);
     router.push({
