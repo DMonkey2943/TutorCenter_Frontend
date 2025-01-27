@@ -6,11 +6,15 @@
     <form @submit.prevent="updateTutorProfile()">
       <div class="row">
         <div class="col-12 col-lg-4">
-          <div class="row">
+          <div class="row mb-5">
             <div class="col-12 d-flex justify-content-center mb-3">
-              <a-avatar shape="square" :size="200">
+              <a-avatar
+                v-if="previewAvatar || fullAvatarUrl"
+                shape="square"
+                :size="200"
+              >
                 <template #icon>
-                  <img :src="previewImage || fullAvatarUrl" alt="Avatar" />
+                  <img :src="previewAvatar || fullAvatarUrl" alt="Avatar" />
                 </template>
               </a-avatar>
             </div>
@@ -19,11 +23,39 @@
                 name="avatar"
                 :before-upload="beforeUpload"
                 :show-upload-list="false"
-                @change="handleChange"
+                @change="handleChangeAvatar"
               >
                 <a-button>
                   <upload-outlined></upload-outlined>
                   Cập nhật ảnh đại diện
+                </a-button>
+              </a-upload>
+            </div>
+          </div>
+          <div class="row mb-5">
+            <div class="col-12 d-flex justify-content-center mb-3">
+              <!-- <a-avatar shape="square" :size="200">
+                <template #icon> -->
+              <img
+                v-if="previewDegree || fullDegreeUrl"
+                :src="previewDegree || fullDegreeUrl"
+                alt="Degree"
+                style="width: 100%; height: auto; max-width: 260px"
+                @click="zoomDegree"
+              />
+              <!-- </template>
+              </a-avatar> -->
+            </div>
+            <div class="col-12 d-flex justify-content-center">
+              <a-upload
+                name="avatar"
+                :before-upload="beforeUpload"
+                :show-upload-list="false"
+                @change="handleChangeDegree"
+              >
+                <a-button>
+                  <upload-outlined></upload-outlined>
+                  Cập nhật bằng cấp/thẻ sinh viên
                 </a-button>
               </a-upload>
             </div>
@@ -301,6 +333,20 @@
       </div>
     </form>
   </a-card>
+
+  <!-- Modal để phóng to hình ảnh -->
+  <a-modal
+    v-model:open="isZoomDegree"
+    :footer="null"
+    closable
+    class="modal-zoom-degree"
+  >
+    <img
+      :src="previewDegree || fullDegreeUrl"
+      alt="Degree"
+      class="zoom-degree-image"
+    />
+  </a-modal>
 </template>
 <script setup>
 import { ref, reactive, computed, onMounted } from "vue";
@@ -330,6 +376,7 @@ const tutorProfile = reactive({
   major: "",
   school: "",
   avatar: "",
+  degree: "",
   subjects: [],
   grades: [],
   districts: [],
@@ -352,6 +399,12 @@ const fullAvatarUrl = computed(() => {
   }
   return `${backendHost}/storage/${tutorProfile.avatar}`;
 });
+const fullDegreeUrl = computed(() => {
+  if (!tutorProfile.degree) {
+    return null;
+  }
+  return `${backendHost}/storage/${tutorProfile.degree}`;
+});
 
 const getTutorProfile = async () => {
   try {
@@ -360,13 +413,16 @@ const getTutorProfile = async () => {
     const dataProfile = result.data;
     // console.log(dataProfile);
     tutorProfile.name = dataProfile.user.name;
-    tutorProfile.gender = dataProfile.gender ?? null;
-    tutorProfile.birthday = ref(dayjs(dataProfile.birthday, dateFormat));
-    tutorProfile.address = dataProfile.address ?? null;
-    tutorProfile.level_id = dataProfile?.level?.id ?? null;
-    tutorProfile.major = dataProfile.major ?? null;
-    tutorProfile.school = dataProfile.school ?? null;
+    tutorProfile.gender = dataProfile.gender ?? "";
+    tutorProfile.birthday = dataProfile.birthday
+      ? ref(dayjs(dataProfile.birthday, dateFormat))
+      : null;
+    tutorProfile.address = dataProfile.address ?? "";
+    tutorProfile.level_id = dataProfile?.level?.id ?? "";
+    tutorProfile.major = dataProfile.major ?? "";
+    tutorProfile.school = dataProfile.school ?? "";
     tutorProfile.avatar = dataProfile.avatar ?? null;
+    tutorProfile.degree = dataProfile.degree ?? null;
     tutorProfile.subjects = Array.isArray(dataProfile.subjects)
       ? dataProfile.subjects.map((subject) => subject.id)
       : [];
@@ -376,8 +432,8 @@ const getTutorProfile = async () => {
     tutorProfile.districts = Array.isArray(dataProfile.districts)
       ? dataProfile.districts.map((district) => district.id)
       : [];
-    tutorProfile.experiences = dataProfile.experiences ?? null;
-    tutorProfile.tuition_id = dataProfile?.tuition?.id ?? null;
+    tutorProfile.experiences = dataProfile.experiences ?? "";
+    tutorProfile.tuition_id = dataProfile?.tuition?.id ?? "";
     // console.log(tutorProfile);
   } catch (error) {
     console.log(error);
@@ -450,14 +506,26 @@ const beforeUpload = (file) => {
 
   return isImage && isLt2M;
 };
-const previewImage = ref("");
-const handleChange = (info) => {
+const previewAvatar = ref("");
+const handleChangeAvatar = (info) => {
   const file = info.file.originFileObj;
   if (file && beforeUpload(file)) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      previewImage.value = e.target.result;
+      previewAvatar.value = e.target.result;
       tutorProfile.avatar = file;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+const previewDegree = ref("");
+const handleChangeDegree = (info) => {
+  const file = info.file.originFileObj;
+  if (file && beforeUpload(file)) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewDegree.value = e.target.result;
+      tutorProfile.degree = file;
     };
     reader.readAsDataURL(file);
   }
@@ -472,7 +540,7 @@ const updateTutorProfile = async () => {
 
     // Thêm các trường vào FormData
     Object.entries(tutorProfile).forEach(([key, value]) => {
-      if (key === "avatar" && value instanceof File) {
+      if (key === "avatar" && key === "degree" && value instanceof File) {
         formData.append(key, value); // Thêm ảnh
       } else if (key === "birthday") {
         formData.append(
@@ -508,6 +576,11 @@ const updateTutorProfile = async () => {
   }
 };
 
+const isZoomDegree = ref(false);
+const zoomDegree = () => {
+  isZoomDegree.value = true;
+};
+
 onMounted(() => {
   getDistricts(); // Lấy danh sách districts
   getSubjects(); // Lấy danh sách subjects
@@ -517,3 +590,17 @@ onMounted(() => {
   getTutorProfile(); // Lấy thông tin tutor profile
 });
 </script>
+
+<style>
+.modal-zoom-degree .ant-modal-content {
+  max-width: none; /* Bỏ giới hạn max-width mặc định */
+  padding: 0; /* Xóa padding để modal vừa với hình ảnh */
+}
+
+.zoom-degree-image {
+  display: block;
+  max-width: 100%; /* Hình ảnh không vượt quá chiều rộng modal */
+  height: auto; /* Giữ tỷ lệ hình ảnh */
+  margin: 0 auto; /* Căn giữa hình ảnh */
+}
+</style>

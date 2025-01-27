@@ -7,15 +7,30 @@
     </div>
 
     <div v-if="status" class="row">
-      <div class="col-12 col-md-4">
-        <!-- <span>Ảnh đại diện</span> -->
-        <a-avatar shape="square" :size="200">
-          <template #icon>
-            <img :src="fullAvatarUrl" alt="Avatar" />
-          </template>
-        </a-avatar>
+      <div class="col-12 col-lg-4">
+        <div class="row mb-2">
+          <div class="col-12 d-flex justify-content-center mb-3">
+            <!-- <span>Ảnh đại diện</span> -->
+            <a-avatar v-if="fullAvatarUrl" shape="square" :size="200">
+              <template #icon>
+                <img :src="fullAvatarUrl" alt="Avatar" />
+              </template>
+            </a-avatar>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-12 d-flex justify-content-center mb-3">
+            <img
+              v-if="fullDegreeUrl"
+              :src="fullDegreeUrl"
+              alt="Degree"
+              style="width: 100%; height: auto; max-width: 260px"
+              @click="zoomDegree"
+            />
+          </div>
+        </div>
       </div>
-      <div class="col-12 col-md-8">
+      <div class="col-12 col-lg-8">
         <div>
           <span class="fw-bold">Giới tính: </span>
           <span>{{ tutorProfile.gender === "M" ? "Nam" : "Nữ" }}</span>
@@ -95,9 +110,23 @@
       </div>
     </div>
   </a-card>
+
+  <!-- Modal để phóng to hình ảnh -->
+  <a-modal
+    v-model:open="isZoomDegree"
+    :footer="null"
+    closable
+    class="modal-zoom-degree"
+  >
+    <img
+      :src="previewDegree || fullDegreeUrl"
+      alt="Degree"
+      class="zoom-degree-image"
+    />
+  </a-modal>
 </template>
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
@@ -118,6 +147,12 @@ const fullAvatarUrl = computed(() => {
     return null;
   }
   return `${backendHost}/storage/${tutorProfile.value.avatar}`;
+});
+const fullDegreeUrl = computed(() => {
+  if (!tutorProfile.value.degree) {
+    return null;
+  }
+  return `${backendHost}/storage/${tutorProfile.value.degree}`;
 });
 
 const getTutorProfile = async () => {
@@ -143,5 +178,26 @@ const getTutorProfile = async () => {
   }
 };
 
-getTutorProfile();
+const isZoomDegree = ref(false);
+const zoomDegree = () => {
+  isZoomDegree.value = true;
+};
+
+onMounted(() => {
+  getTutorProfile();
+});
 </script>
+
+<style>
+.modal-zoom-degree .ant-modal-content {
+  max-width: none; /* Bỏ giới hạn max-width mặc định */
+  padding: 0; /* Xóa padding để modal vừa với hình ảnh */
+}
+
+.zoom-degree-image {
+  display: block;
+  max-width: 100%; /* Hình ảnh không vượt quá chiều rộng modal */
+  height: auto; /* Giữ tỷ lệ hình ảnh */
+  margin: 0 auto; /* Căn giữa hình ảnh */
+}
+</style>
