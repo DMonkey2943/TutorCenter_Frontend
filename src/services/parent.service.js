@@ -9,6 +9,10 @@ class ParentService {
     return (await this.api.get("/")).data;
   }
 
+  async getAll() {
+    return (await this.api.get("/getAll")).data;
+  }
+
   async store(request) {
     return (await this.api.post("/", request)).data;
   }
