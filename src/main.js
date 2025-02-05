@@ -22,6 +22,8 @@ import {
   Checkbox,
   Upload,
   //   Message,
+  TimePicker,
+  InputNumber,
 } from "ant-design-vue";
 
 import { UploadOutlined } from "@ant-design/icons-vue";
@@ -52,6 +54,8 @@ app.use(Col);
 app.use(Checkbox);
 // app.use(Message);
 app.use(Upload);
+app.use(TimePicker);
+app.use(InputNumber);
 
 app.component("UploadOutlined", UploadOutlined);
 
