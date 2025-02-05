@@ -57,6 +57,28 @@ export default [
         name: "admin.parents.edit",
         component: () => import("../views/admin/parents/edit.vue"),
       },
+
+      //   Quản lý lớp học
+      {
+        path: "classes",
+        name: "admin.classes",
+        component: () => import("../views/admin/classes/index.vue"),
+      },
+      {
+        path: "classes/:id",
+        name: "admin.classes.detail",
+        component: () => import("../views/admin/classes/detail.vue"),
+      },
+      {
+        path: "classes/create",
+        name: "admin.classes.create",
+        component: () => import("../views/admin/classes/create.vue"),
+      },
+      {
+        path: "classes/:id/edit",
+        name: "admin.classes.edit",
+        component: () => import("../views/admin/classes/edit.vue"),
+      },
     ],
   },
 ];

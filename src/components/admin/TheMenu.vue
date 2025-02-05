@@ -43,6 +43,12 @@ const items = reactive([
     title: "Quản lý phụ huynh",
     pathName: "admin.parents",
   },
+  {
+    key: "admin-classes",
+    label: "Quản lý lớp học",
+    title: "Quản lý lớp học",
+    pathName: "admin.classes",
+  },
 ]);
 
 const onMenuClick = (info) => {
