@@ -128,7 +128,7 @@ const deleteClass = async (id) => {
     async onOk() {
       try {
         await ClassService.destroy(id);
-        getAllParents();
+        getAllClasses();
         message.success("Xóa lớp học thành công");
       } catch (error) {
         console.log(error);
