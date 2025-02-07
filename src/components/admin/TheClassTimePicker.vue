@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { TimePicker } from "ant-design-vue";
 import dayjs from "dayjs";
 
@@ -12,7 +12,6 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 
-// Định nghĩa các ngày trong tuần
 const weekDays = [
   { id: 2, name: "Thứ 2" },
   { id: 3, name: "Thứ 3" },
@@ -23,37 +22,55 @@ const weekDays = [
   { id: 8, name: "Chủ nhật" },
 ];
 
-// Biến lưu trữ kết quả tạm thời
 const times = ref([]);
 
-// Hàm xử lý khi chọn/bỏ chọn ngày
+// Sửa lại watch để không ghi đè hoàn toàn times
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue && newValue.length > 0) {
+      // Giữ lại các time slot đã có và thêm mới từ API
+      const existingDays = times.value.filter((t) => !t.id).map((t) => t.day);
+      const apiTimes = newValue.filter((t) => !existingDays.includes(t.day));
+
+      times.value = [
+        ...times.value.filter((t) => !t.id), // Giữ lại các time slot người dùng vừa chọn
+        ...apiTimes.map((time) => ({
+          day: time.day,
+          start: time.start,
+          end: time.end,
+          id: time.id,
+          class_id: time.class_id,
+        })),
+      ];
+    }
+  },
+  { immediate: true }
+);
+
 const handleDayToggle = (dayId) => {
   const dayName = weekDays.find((d) => d.id === dayId)?.name || "";
+  const existingTimeSlot = times.value.find((t) => t.day === dayName);
 
-  // Lọc ra tất cả các time slots của ngày này
-  const isSelected = times.value.some((t) => t.day === dayName);
-
-  if (!isSelected) {
-    // Thêm một time slot mới nếu chưa có
+  if (!existingTimeSlot) {
+    // Thêm time slot mới
     times.value.push({
       day: dayName,
       start: null,
       end: null,
     });
   } else {
-    // Xóa tất cả time slots của ngày này
+    // Xóa time slot
     times.value = times.value.filter((t) => t.day !== dayName);
   }
   updateModelValue();
 };
 
-// Hàm xử lý khi chọn giờ bắt đầu
 const handleTimeChange = (time, dayId) => {
   const dayName = weekDays.find((d) => d.id === dayId)?.name;
   const timeSlot = times.value.find((t) => t.day === dayName);
 
   if (timeSlot && time) {
-    // Format thời gian theo yêu cầu HH:mm:ss
     const startTime = dayjs(time).format("HH:mm:ss");
     const endTime = dayjs(time).add(1.5, "hour").format("HH:mm:ss");
 
@@ -64,39 +81,31 @@ const handleTimeChange = (time, dayId) => {
   }
 };
 
-// Cập nhật giá trị cho v-model
 const updateModelValue = () => {
-  // Chỉ emit những time slot đã có đủ thông tin
   const validTimes = times.value.filter((t) => t.start && t.end);
   emit("update:modelValue", validTimes);
 };
 
-// Hàm kiểm tra ngày đã chọn
 const isDaySelected = (dayId) => {
   const dayName = weekDays.find((d) => d.id === dayId)?.name;
   return times.value.some((t) => t.day === dayName);
 };
 
-// Hàm lấy giờ bắt đầu của một ngày
 const getTimeValue = (dayId) => {
   const dayName = weekDays.find((d) => d.id === dayId)?.name;
   const timeSlot = times.value.find((t) => t.day === dayName);
   return timeSlot?.start ? dayjs(timeSlot.start, "HH:mm:ss") : null;
 };
 
-// Lọc ra các time slots hợp lệ cho hiển thị
 const validTimesForDisplay = computed(() => {
   return times.value.filter(
-    (time, index, self) =>
-      // Chỉ giữ lại một time slot cho mỗi ngày
-      self.findIndex((t) => t.day === time.day) === index
+    (time, index, self) => self.findIndex((t) => t.day === time.day) === index
   );
 });
 </script>
 
 <template>
   <div class="schedule-picker">
-    <!-- Hiển thị các ngày trong tuần -->
     <div class="days-container my-1">
       <div v-for="day in weekDays" :key="day.id" class="day-item">
         <div class="form-check">
@@ -112,7 +121,6 @@ const validTimesForDisplay = computed(() => {
           </label>
         </div>
 
-        <!-- Time picker chỉ hiện khi ngày được chọn -->
         <a-time-picker
           v-if="isDaySelected(day.id)"
           :value="getTimeValue(day.id)"
@@ -124,7 +132,6 @@ const validTimesForDisplay = computed(() => {
       </div>
     </div>
 
-    <!-- Hiển thị kết quả đã chọn -->
     <div v-if="validTimesForDisplay.length > 0" class="selected-times mt-4">
       <h4>Lịch học đã chọn:</h4>
       <ul class="list-unstyled">
@@ -140,7 +147,6 @@ const validTimesForDisplay = computed(() => {
     </div>
   </div>
 </template>
-
 <style scoped>
 .schedule-picker {
   max-width: 600px;
