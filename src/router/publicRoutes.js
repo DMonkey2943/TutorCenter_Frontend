@@ -13,6 +13,11 @@ export default [
         name: "classes",
         component: () => import("../views/ClassesView.vue"),
       },
+      {
+        path: "login",
+        name: "login",
+        component: () => import("../views/auth/LoginView.vue"),
+      },
     ],
   },
 ];
