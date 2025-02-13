@@ -28,6 +28,10 @@ class ClassService {
   async get12Classes() {
     return (await this.api.get("/get12Classes")).data;
   }
+
+  async getAllNewClasses(page = 1) {
+    return (await this.api.get("/getAllNewClasses", { params: { page } })).data;
+  }
 }
 
 export default new ClassService();

@@ -24,456 +24,51 @@
       >
         <h1 class="mb-2">Lớp mới</h1>
         <p>
-          Trung tâm gia sư Cần Thơ thường xuyên cập nhật nhiều lớp dạy kèm
-                mới mỗi ngày.
+          Trung tâm gia sư Cần Thơ thường xuyên cập nhật nhiều lớp dạy kèm mới
+          mỗi ngày.
         </p>
       </div>
-      <div class="row g-4">
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row g-4 mt-2">
-        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-          <a-pagination v-model:current="current" :total="50" show-less-items />
-        </div>
-      </div>
+      <TheClassList
+        :classes="classes"
+        @pageChange="handlePageChange"
+      ></TheClassList>
     </div>
   </div>
   <!-- Classes End -->
 </template>
 
 <script setup>
-import { ref } from 'vue';
-const current = ref(2);
-</script>
+import { ref, onMounted } from "vue";
+import ClassService from "@/services/class.service";
+import TheClassList from "@/components/TheClassList.vue";
 
+// Biến lưu dữ liệu phân trang từ API
+const classes = ref({
+  data: [],
+  current_page: 1,
+  last_page: 1,
+  total: 0,
+  per_page: 6, // Số bản ghi trên mỗi trang (theo backend của bạn)
+});
+
+// Hàm gọi API, truyền tham số page
+const getAllNewClasses = async (page = 1) => {
+  try {
+    const response = await ClassService.getAllNewClasses(page);
+    classes.value = response;
+    console.log(classes.value);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Hàm xử lý khi người dùng chuyển trang (Ant Design Vue sẽ trả về số trang mới)
+const handlePageChange = (page) => {
+  getAllNewClasses(page);
+};
+
+// Gọi API ngay khi component được mount
+onMounted(() => {
+  getAllNewClasses();
+});
+</script>
