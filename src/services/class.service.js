@@ -24,6 +24,10 @@ class ClassService {
   async destroy(id) {
     return (await this.api.delete(`/${id}`)).data;
   }
+
+  async get12Classes() {
+    return (await this.api.get("/get12Classes")).data;
+  }
 }
 
 export default new ClassService();

@@ -1,5 +1,4 @@
 <template>
-  <!-- <div class="container-xxl bg-white p-0"> -->
   <!-- Spinner Start -->
   <div
     id="spinner"
@@ -174,9 +173,8 @@
                 theo tháng hoặc nửa tháng /lần tùy thỏa thuận.
               </p>
               <p class="mb-4">
-                Phụ huynh có nhu
-                cầu đăng ký lớp dạy kèm để tìm gia sư vui lòng đăng ký tài
-                khoản/đăng nhập.
+                Phụ huynh có nhu cầu đăng ký lớp dạy kèm để tìm gia sư vui lòng
+                đăng ký tài khoản/đăng nhập.
               </p>
               <a class="btn btn-primary py-3 px-5" href=""
                 >Đăng ký tìm gia sư ngay<i class="fa fa-search ms-2"></i
@@ -215,8 +213,7 @@
                 mới mỗi ngày.
               </p>
               <p class="mb-4">
-                Gia sư có nhu cầu nhận lớp vui lòng đăng ký tài
-                khoản/đăng nhập.
+                Gia sư có nhu cầu nhận lớp vui lòng đăng ký tài khoản/đăng nhập.
               </p>
               <a class="btn btn-primary py-3 px-5" href=""
                 >Đăng ký làm gia sư ngay<i class="fa fa-briefcase ms-2"></i
@@ -238,225 +235,75 @@
         style="max-width: 600px"
       >
         <h1 class="mb-2">Lớp mới</h1>
-        <!-- <p>
-          Eirmod sed ipsum dolor sit rebum labore magna erat. Tempor ut dolore
-          lorem kasd vero ipsum sit eirmod sit. Ipsum diam justo sed rebum vero
-          dolor duo.
-        </p> -->
+        <p>Nhiều LỚP HIỆN CÓ CẦN GIA SƯ cập nhật liên tục mỗi ngày</p>
       </div>
       <div class="row g-4">
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
+        <div
+          v-for="class1 in classes"
+          :key="class1.id"
+          class="col-lg-4 col-md-6 wow fadeInUp"
+          data-wow-delay="0.1s"
+        >
+          <div class="card h-100">
             <div
               class="card-header d-flex justify-content-between align-items-center"
             >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
+              <h5 class="mb-0">MS: {{ class1.id }}</h5>
+              <p
+                v-if="class1.status == 0"
+                class="p-2 m-0 bg-danger text-white rounded"
+              >
+                Chưa giao
+              </p>
+              <p
+                v-else-if="class1.status == 1"
+                class="p-2 m-0 bg-success text-white rounded"
+              >
+                Đã giao
+              </p>
             </div>
             <div class="card-body">
               <div>
                 <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
+                <span class="text-primary">{{
+                  class1.subjects.map((s) => s.name).join(", ")
+                }}</span>
               </div>
               <div>
                 <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
+                <span class="text-primary">{{ class1.grade.name }}</span>
               </div>
               <div>
                 <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
+                {{ class1.address.ward.name }},
+                {{ class1.address.ward.district.name }}
               </div>
               <div>
                 <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
+                {{
+                  isNaN(class1.tuition)
+                    ? class1.tuition
+                    : new Intl.NumberFormat("vi-VN").format(class1.tuition) +
+                      "đ"
+                }}
               </div>
               <div>
                 <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
+                {{
+                  class1.class_times
+                    .map(
+                      (time) =>
+                        `${time.day} (${time.start.slice(
+                          0,
+                          5
+                        )} - ${time.end.slice(0, 5)})`
+                    )
+                    .join("; ")
+                }}
               </div>
               <div>
                 <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h5 class="mb-0">MS: 5</h5>
-              <p class="p-2 m-0 bg-danger text-white rounded">Chưa giao</p>
-            </div>
-            <div class="card-body">
-              <div>
-                <span class="fw-semibold">Môn dạy: </span>
-                <span class="text-primary">Toán, Tiếng Việt, Tiếng Anh</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Khối lớp: </span>
-                <span class="text-primary">Lớp 4</span>
-              </div>
-              <div>
-                <span class="fw-semibold">Địa chỉ: </span>
-                Phường Xuân Khánh, Quận Ninh Kiều
-              </div>
-              <div>
-                <span class="fw-semibold">Mức lương/buổi: </span>
-                120.000đ
-              </div>
-              <div>
-                <span class="fw-semibold">Thời gian dạy: </span>
-                Thứ 3 (17:00 - 18:30); Thứ 7 (19:00 - 20:30)
-              </div>
-              <div>
-                <span class="fw-semibold">Yêu cầu: </span>
-                Sinh viên Đại học + Nam
+                {{ formattedLevelGender(class1) }}
               </div>
             </div>
           </div>
@@ -472,7 +319,38 @@
   <!-- Classes End -->
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, onMounted, computed } from "vue";
+import ClassService from "@/services/class.service";
+
+const classes = ref([]);
+const get12Classes = async () => {
+  try {
+    const response = await ClassService.get12Classes();
+    classes.value = response.data || [];
+    // console.log(classes.value);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const formattedLevelGender = (class1) => {
+  if (!class1) return ""; // Nếu class1 undefined, trả về chuỗi rỗng
+  if (class1.level && class1.gender_tutor) {
+    const gender = class1.gender_tutor == "M" ? "Nam" : "Nữ";
+    return `${class1.level.name} + ${gender}`;
+  } else if (class1.level) {
+    return class1.level.name;
+  } else if (class1.gender_tutor) {
+    return class1.gender_tutor == "M" ? "Nam" : "Nữ";
+  }
+  return ""; // Trường hợp cả 2 đều null
+};
+
+onMounted(() => {
+  get12Classes();
+});
+</script>
 
 <style>
 .carousel-inner {
