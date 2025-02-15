@@ -1,11 +1,10 @@
 <template>
   <nav
-    class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5 py-lg-0"
+    class="navbar navbar-expand-lg navbar-light sticky-top px-4 px-lg-5 py-lg-0"
+    style="background-color: #f3f3f3"
   >
     <a href="index.html" class="navbar-brand">
-      <h3 class="m-0 text-primary" style="color: #fe5d37">
-        Gia Sư Cần Thơ
-      </h3>
+      <h3 class="m-0 text-primary" style="color: #fe5d37">Gia Sư Cần Thơ</h3>
     </a>
     <button
       type="button"
@@ -16,14 +15,17 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
-      <div class="navbar-nav mx-auto">
+      <div class="navbar-nav mx-auto text-uppercase">
         <a href="index.html" class="nav-item fw-semibold nav-link active"
           >Trang chủ</a
         >
         <a href="about.html" class="nav-item fw-semibold nav-link">Gia sư</a>
         <a href="classes.html" class="nav-item fw-semibold nav-link">Lớp mới</a>
         <div class="nav-item fw-semibold dropdown">
-          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+          <a
+            href="#"
+            class="nav-link dropdown-toggle fw-semibold"
+            data-bs-toggle="dropdown"
             >Pages</a
           >
           <div
