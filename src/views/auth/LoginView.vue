@@ -54,10 +54,11 @@
           <div class="text-center">
             <div class="my-1">Bạn chưa có tài khoản?</div>
             <div class="my-1">
-              <a href="">
+              <router-link
+                :to="{ name: 'register.parent' }">
                 Đăng ký tìm gia sư ngay
                 <i class="fa fa-search"></i>
-              </a>
+              </router-link>
             </div>
             <div class="my-1">
               <a href="">
@@ -89,6 +90,7 @@ const validationErrors = ref({});
 
 const handleLogin = async () => {
   const success = await authStore.login(user);
+  authStore.fetchUser();
   if (success) {
     message.success("Đăng nhập thành công");
     router.push({ name: "home" });
