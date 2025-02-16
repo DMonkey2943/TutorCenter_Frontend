@@ -6,10 +6,26 @@
         data-wow-delay="0.1s"
         style="max-width: 450px"
       >
-        <h1 class="text-center mb-2">Đăng nhập</h1>
+        <h1 class="text-center mb-2">Đăng ký làm gia sư</h1>
 
         <a-card class="py-2">
-          <form @submit.prevent="handleLogin">
+          <form @submit.prevent="handleRegister">
+            <div class="row mb-4">
+              <div class="col-12 text-start">
+                <label for="">
+                  <span class="text-danger">*</span>
+                  <span>Họ tên:</span>
+                </label>
+              </div>
+              <div class="col-12">
+                <a-input v-model:value="user.name" />
+                <div class="w-100"></div>
+                <small v-if="validationErrors.name" class="text-danger">
+                  {{ validationErrors.name[0] }}
+                </small>
+              </div>
+            </div>
+
             <div class="row mb-4">
               <div class="col-12 text-start">
                 <label for="">
@@ -22,6 +38,22 @@
                 <div class="w-100"></div>
                 <small v-if="validationErrors.email" class="text-danger">
                   {{ validationErrors.email[0] }}
+                </small>
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-12 text-start">
+                <label for="">
+                  <span class="text-danger">*</span>
+                  <span>SĐT:</span>
+                </label>
+              </div>
+              <div class="col-12">
+                <a-input v-model:value="user.phone" />
+                <div class="w-100"></div>
+                <small v-if="validationErrors.phone" class="text-danger">
+                  {{ validationErrors.phone[0] }}
                 </small>
               </div>
             </div>
@@ -50,28 +82,12 @@
                   :disabled="authStore.loading"
                 >
                   <span>{{
-                    authStore.loading ? "Đang xử lý..." : "Đăng nhập"
+                    authStore.loading ? "Đang xử lý..." : "Đăng ký"
                   }}</span>
                 </a-button>
               </div>
             </div>
           </form>
-
-          <div class="text-center">
-            <div class="my-1">Bạn chưa có tài khoản?</div>
-            <div class="my-1">
-              <router-link :to="{ name: 'register.parent' }">
-                Đăng ký tìm gia sư ngay
-                <i class="fa fa-search"></i>
-              </router-link>
-            </div>
-            <div class="my-1">
-              <router-link :to="{ name: 'register.tutor' }">
-                Đăng ký làm gia sư ngay
-                <i class="fa fa-briefcase" aria-hidden="true"></i>
-              </router-link>
-            </div>
-          </div>
         </a-card>
       </div>
     </div>
@@ -87,19 +103,20 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const user = reactive({
+  name: "",
   email: "",
+  phone: "",
   password: "",
+  role: "tutor",
 });
 
 const validationErrors = ref({});
 
-const handleLogin = async () => {
-  const success = await authStore.login(user);
-  authStore.fetchUser();
+const handleRegister = async () => {
+  const success = await authStore.register(user);
   if (success) {
-    message.success("Đăng nhập thành công");
-    router.push({ name: "home" });
-    console.log("User: " + authStore.user);
+    message.success("Đăng ký tài khoản gia sư thành công");
+    router.push({ name: "login" });
   } else {
     validationErrors.value = authStore.validationErrors ?? {};
     if (authStore.error) {

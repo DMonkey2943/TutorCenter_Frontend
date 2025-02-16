@@ -23,6 +23,11 @@ export default [
         name: "register.parent",
         component: () => import("../views/auth/ParentRegisterView.vue"),
       },
+      {
+        path: "register/tutor",
+        name: "register.tutor",
+        component: () => import("../views/auth/TutorRegisterView.vue"),
+      },
     ],
   },
 ];
