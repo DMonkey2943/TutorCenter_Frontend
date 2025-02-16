@@ -8,6 +8,18 @@ class AuthService {
   async register(request) {
     return (await this.api.post("/register", request)).data;
   }
+
+  async login(request) {
+    return (await this.api.post("/login", request)).data;
+  }
+
+  async logout() {
+    return (await this.api.get("/logout")).data;
+  }
+
+  async getAccount() {
+    return (await this.api.get("/account")).data;
+  }
 }
 
 export default new AuthService();

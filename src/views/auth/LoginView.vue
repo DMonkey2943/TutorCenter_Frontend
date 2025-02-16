@@ -9,45 +9,47 @@
         <h1 class="text-center mb-2">Đăng nhập</h1>
 
         <a-card class="py-2">
-          <div class="row mb-4">
-            <div class="col-12 text-start">
-              <label for="">
-                <span class="text-danger">*</span>
-                <span>Email:</span>
-              </label>
+          <form @submit.prevent="handleLogin">
+            <div class="row mb-4">
+              <div class="col-12 text-start">
+                <label for="">
+                  <span class="text-danger">*</span>
+                  <span>Email:</span>
+                </label>
+              </div>
+              <div class="col-12">
+                <a-input v-model:value="user.email" />
+                <div class="w-100"></div>
+                <small v-if="validationErrors.email" class="text-danger">
+                  {{ validationErrors.email[0] }}
+                </small>
+              </div>
             </div>
-            <div class="col-12">
-              <a-input />
-              <div class="w-100"></div>
-              <!-- <small v-if="errors.email" class="text-danger">
-              {{ errors.email[0] }}
-            </small> -->
-            </div>
-          </div>
-          
-          <div class="row mb-4">
-            <div class="col-12 text-start">
-              <label for="">
-                <span class="text-danger">*</span>
-                <span>Mật khẩu:</span>
-              </label>
-            </div>
-            <div class="col-12">
-              <a-input-password />
-              <div class="w-100"></div>
-              <!-- <small v-if="errors.password" class="text-danger">
-              {{ errors.password[0] }}
-            </small> -->
-            </div>
-          </div>
 
-          <div class="row mb-4">
-            <div class="col-12 d-grid">
-              <a-button type="primary" html-type="submit">
-                <span>Đăng nhập</span>
-              </a-button>
+            <div class="row mb-4">
+              <div class="col-12 text-start">
+                <label for="">
+                  <span class="text-danger">*</span>
+                  <span>Mật khẩu:</span>
+                </label>
+              </div>
+              <div class="col-12">
+                <a-input-password v-model:value="user.password" />
+                <div class="w-100"></div>
+                <small v-if="validationErrors.password" class="text-danger">
+                  {{ validationErrors.password[0] }}
+                </small>
+              </div>
             </div>
-          </div>
+
+            <div class="row mb-4">
+              <div class="col-12 d-grid">
+                <a-button type="primary" html-type="submit" :disabled="authStore.loading">
+                  <span>{{ authStore.loading ? 'Đang xử lý...' : 'Đăng nhập' }}</span>
+                </a-button>
+              </div>
+            </div>
+          </form>
 
           <div class="text-center">
             <div class="my-1">Bạn chưa có tài khoản?</div>
@@ -69,4 +71,33 @@
     </div>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { reactive, ref } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
+import message from "ant-design-vue/es/message";
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const user = reactive({
+  email: "",
+  password: "",
+});
+
+const validationErrors = ref({});
+
+const handleLogin = async () => {
+  const success = await authStore.login(user);
+  if (success) {
+    message.success("Đăng nhập thành công");
+    router.push({ name: "home" });
+    console.log("User: " + authStore.user);
+  } else {
+    validationErrors.value = authStore.validationErrors ?? {};
+    if (authStore.error) {
+      message.error(authStore.error);
+    }
+  }
+};
+</script>

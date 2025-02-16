@@ -3,9 +3,9 @@
     class="navbar navbar-expand-lg navbar-light sticky-top px-4 px-lg-5 py-lg-0"
     style="background-color: #f3f3f3"
   >
-    <a href="index.html" class="navbar-brand">
+    <router-link :to="{ name: 'home' }" class="navbar-brand">
       <h3 class="m-0 text-primary" style="color: #fe5d37">Gia Sư Cần Thơ</h3>
-    </a>
+    </router-link>
     <button
       type="button"
       class="navbar-toggler"
@@ -16,49 +16,69 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <div class="navbar-nav mx-auto text-uppercase">
-        <a href="index.html" class="nav-item fw-semibold nav-link active"
-          >Trang chủ</a
+        <router-link
+          :to="{ name: 'home' }"
+          class="nav-item fw-semibold nav-link active"
+          >Trang chủ</router-link
         >
-        <a href="about.html" class="nav-item fw-semibold nav-link">Gia sư</a>
-        <a href="classes.html" class="nav-item fw-semibold nav-link">Lớp mới</a>
-        <div class="nav-item fw-semibold dropdown">
+        <!-- <a href="about.html" class="nav-item fw-semibold nav-link">Gia sư</a> -->
+        <router-link
+          :to="{ name: 'classes' }"
+          class="nav-item fw-semibold nav-link"
+          >Lớp mới</router-link
+        >
+        <div v-if="authStore.user_id" class="nav-item fw-semibold dropdown">
           <a
             href="#"
             class="nav-link dropdown-toggle fw-semibold"
             data-bs-toggle="dropdown"
-            >Pages</a
+            >{{ authStore.user_name }}</a
           >
           <div
             class="dropdown-menu rounded-0 rounded-bottom border-0 shadow-sm m-0"
           >
-            <a href="facility.html" class="dropdown-item">School Facilities</a>
-            <a href="team.html" class="dropdown-item">Popular Teachers</a>
-            <a href="call-to-action.html" class="dropdown-item"
-              >Become A Teachers</a
-            >
-            <a href="appointment.html" class="dropdown-item"
-              >Make Appointment</a
-            >
-            <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-            <a href="404.html" class="dropdown-item">404 Error</a>
+            <a href="" class="dropdown-item">Tài khoản</a>
+            <a v-if="authStore.user_role=='tutor'" href="" class="dropdown-item">Hồ sơ</a>
+            <div class="dropdown-item" @click="handleLogout">Đăng xuất</div>
           </div>
         </div>
-        <a href="contact.html" class="nav-item fw-semibold nav-link"
-          >Contact Us</a
-        >
-        <a
-          href="login.html"
+
+        <router-link
+          :to="{ name: 'login' }"
           class="nav-item fw-semibold nav-link btn btn-primary text-white px-3 mt-2 mt-lg-0 d-lg-none"
         >
-          Đăng nhập <i class="fa fa-arrow-right ms-2"></i>
-        </a>
+          Đăng nhập
+          <i class="fa fa-arrow-right ms-2"></i>
+        </router-link>
       </div>
-      <a
-        href="login.html"
-        class="btn btn-primary rounded-pill px-3 d-none d-lg-block fw-semibold"
-        >Đăng nhập<i class="fa fa-arrow-right ms-3"></i
-      ></a>
+      <button
+        class="btn btn-primary rounded-pill px-3 d-none d-lg-block fw-semibold text-white"
+      >
+        <router-link :to="{ name: 'login' }" class="text-white">
+          Đăng nhập
+          <i class="fa fa-arrow-right ms-3"></i>
+        </router-link>
+      </button>
     </div>
   </nav>
 </template>
-<script setup></script>
+<script setup>
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
+import message from "ant-design-vue/es/message";
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const handleLogout = async () => {
+  const success = await authStore.logout();
+  if (success) {
+    message.success("Đăng xuất thành công");
+    router.push({ name: "login" });
+  } else {
+    if (authStore.error) {
+      message.error(authStore.error);
+    }
+  }
+};
+</script>
