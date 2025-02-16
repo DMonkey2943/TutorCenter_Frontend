@@ -95,11 +95,14 @@ const validationErrors = ref({});
 
 const handleLogin = async () => {
   const success = await authStore.login(user);
-  authStore.fetchUser();
   if (success) {
+    await authStore.fetchUser();
     message.success("Đăng nhập thành công");
-    router.push({ name: "home" });
-    console.log("User: " + authStore.user);
+    if (authStore.user_role === "admin") {
+      router.push({ name: "admin.dashboard" });
+    } else {
+      router.push({ name: "home" });
+    }
   } else {
     validationErrors.value = authStore.validationErrors ?? {};
     if (authStore.error) {

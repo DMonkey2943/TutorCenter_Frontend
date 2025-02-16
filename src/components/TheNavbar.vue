@@ -38,13 +38,26 @@
             class="dropdown-menu rounded-0 rounded-bottom border-0 shadow-sm m-0"
           >
             <a href="" class="dropdown-item">Tài khoản</a>
-            <a v-if="authStore.user_role=='tutor'" href="" class="dropdown-item">Hồ sơ</a>
-            <div class="dropdown-item" @click="handleLogout">Đăng xuất</div>
+            <a
+              v-if="authStore.user_role == 'tutor'"
+              href=""
+              class="dropdown-item"
+              >Hồ sơ</a
+            >
+            <div class="dropdown-item" @click="handleLogout" style="cursor: pointer;">Đăng xuất</div>
           </div>
         </div>
 
         <router-link
+          :to="{ name: 'admin.dashboard' }"
+          v-if="authStore.user_role=='admin'"
+          class="nav-item fw-semibold nav-link"
+          >Quản trị</router-link
+        >
+
+        <router-link
           :to="{ name: 'login' }"
+          v-if="!authStore.isAuthenticated"
           class="nav-item fw-semibold nav-link btn btn-primary text-white px-3 mt-2 mt-lg-0 d-lg-none"
         >
           Đăng nhập
@@ -52,6 +65,7 @@
         </router-link>
       </div>
       <button
+          v-if="!authStore.isAuthenticated"
         class="btn btn-primary rounded-pill px-3 d-none d-lg-block fw-semibold text-white"
       >
         <router-link :to="{ name: 'login' }" class="text-white">

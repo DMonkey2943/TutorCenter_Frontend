@@ -49,6 +49,7 @@
             <!-- <p>Some representative placeholder content for the first slide.</p> -->
             <router-link
               :to="{ name: 'register.parent' }"
+              v-if="!authStore.isAuthenticated"
               class="btn btn-primary rounded-pill py-sm-3 px-sm-5 me-3 animated slideInLeft"
               >Đăng ký tìm gia sư
               <i class="fa fa-search ms-1" aria-hidden="true"></i
@@ -66,6 +67,7 @@
             <!-- <p>Some representative placeholder content for the first slide.</p> -->
             <router-link
               :to="{ name: 'register.tutor' }"
+              v-if="!authStore.isAuthenticated"
               class="btn btn-primary rounded-pill py-sm-3 px-sm-5 me-3 animated slideInLeft"
               >Đăng ký làm gia sư
               <i class="fa fa-briefcase ms-1" aria-hidden="true"></i
@@ -172,12 +174,13 @@
                 viên. Gia sư dạy theo khung giờ học viên đưa ra. Học phí trả
                 theo tháng hoặc nửa tháng /lần tùy thỏa thuận.
               </p>
-              <p class="mb-4">
+              <p class="mb-4" v-if="!authStore.isAuthenticated">
                 Phụ huynh có nhu cầu đăng ký lớp dạy kèm để tìm gia sư vui lòng
                 đăng ký tài khoản/đăng nhập.
               </p>
               <router-link
                 :to="{ name: 'register.parent' }"
+                v-if="!authStore.isAuthenticated"
                 class="btn btn-primary py-3 px-5"
               >
                 Đăng ký tìm gia sư ngay
@@ -216,11 +219,12 @@
                 Trung tâm gia sư Cần Thơ thường xuyên cập nhật nhiều lớp dạy kèm
                 mới mỗi ngày.
               </p>
-              <p class="mb-4">
+              <p class="mb-4" v-if="!authStore.isAuthenticated">
                 Gia sư có nhu cầu nhận lớp vui lòng đăng ký tài khoản/đăng nhập.
               </p>
               <router-link
                 :to="{ name: 'register.tutor' }"
+                v-if="!authStore.isAuthenticated"
                 class="btn btn-primary py-3 px-5"
               >
                 Đăng ký làm gia sư ngay
@@ -318,9 +322,9 @@
         </div>
       </div>
       <div class="text-center mx-auto mt-4 wow fadeInUp" data-wow-delay="0.1s">
-        <a href="" class="btn btn-primary"
-          >Xem tất cả <i class="fa fa-arrow-right ms-2"></i
-        ></a>
+        <router-link class="btn btn-primary" :to="{ name: 'classes' }">
+          Xem tất cả <i class="fa fa-arrow-right ms-2"></i>
+        </router-link>
       </div>
     </div>
   </div>
@@ -330,6 +334,9 @@
 <script setup>
 import { ref, onMounted, onBeforeUpdate } from "vue";
 import ClassService from "@/services/class.service";
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 const classes = ref([]);
 const get12Classes = async () => {
