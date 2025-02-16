@@ -37,7 +37,7 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     // Khởi tạo store
     async init() {
-      if (this.token && !this.user && !this.initialized) {
+      if (this.token && !this.user?.id && !this.initialized) {
         try {
           await this.fetchUser();
         } catch (error) {
@@ -48,19 +48,14 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
-    clearErrors() {
-      this.validationErrors = {};
-    },
-
     // Lấy thông tin user
     async fetchUser() {
       try {
         this.loading = true;
         this.error = null;
         const response = await AuthService.getAccount();
-        console.log(response);
+        // console.log(response);
         this.user = response.user;
-        console.log(this.user);
       } catch (error) {
         this.error =
           error.response?.data?.message || "Không thể lấy thông tin người dùng";
@@ -75,14 +70,11 @@ export const useAuthStore = defineStore("auth", {
       try {
         this.loading = true;
         this.error = null;
-        // this.clearErrors();
 
         const response = await AuthService.login(credentials);
 
         this.token = response.token;
         localStorage.setItem("token", this.token);
-
-        await this.fetchUser();
 
         return true;
       } catch (error) {
@@ -100,18 +92,42 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
+    // Đăng ký tài khoản mới
+    async register(userData) {
+      try {
+        this.loading = true;
+        this.error = null;
+
+        const response = await AuthService.register(userData);
+        return true;
+      } catch (error) {
+        console.log(error);
+        if (error.response?.status === 422) {
+          // Validation errors
+          this.validationErrors = error.response.data.errors;
+        } else {
+          // General error
+          this.error =
+            error.response?.data?.message || "Đăng ký tài khoản thất bại";
+        }
+        return false;
+      } finally {
+        this.loading = false;
+      }
+    },
+
     // Đăng xuất
     async logout() {
       try {
         this.loading = true;
         if (this.token) {
           await AuthService.logout();
-          }
-          return true;
+        }
+        return true;
       } catch (error) {
         //   console.error("Logout error:", error);
-          this.error = error.response?.data?.message || "Đăng xuất thất bại";
-          return false;
+        this.error = error.response?.data?.message || "Đăng xuất thất bại";
+        return false;
       } finally {
         this.token = null;
         this.user = null;

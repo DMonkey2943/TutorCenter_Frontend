@@ -18,6 +18,11 @@ export default [
         name: "login",
         component: () => import("../views/auth/LoginView.vue"),
       },
+      {
+        path: "register/parent",
+        name: "register.parent",
+        component: () => import("../views/auth/ParentRegisterView.vue"),
+      },
     ],
   },
 ];

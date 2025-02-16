@@ -47,12 +47,12 @@
           <div class="carousel-caption d-block">
             <h2 class="text-white">Dành cho phụ huynh - học sinh</h2>
             <!-- <p>Some representative placeholder content for the first slide.</p> -->
-            <a
-              href=""
+            <router-link
+              :to="{ name: 'register.parent' }"
               class="btn btn-primary rounded-pill py-sm-3 px-sm-5 me-3 animated slideInLeft"
               >Đăng ký tìm gia sư
               <i class="fa fa-search ms-1" aria-hidden="true"></i
-            ></a>
+            ></router-link>
           </div>
         </div>
         <div class="carousel-item">
@@ -176,9 +176,13 @@
                 Phụ huynh có nhu cầu đăng ký lớp dạy kèm để tìm gia sư vui lòng
                 đăng ký tài khoản/đăng nhập.
               </p>
-              <a class="btn btn-primary py-3 px-5" href=""
-                >Đăng ký tìm gia sư ngay<i class="fa fa-search ms-2"></i
-              ></a>
+              <router-link
+                :to="{ name: 'register.parent' }"
+                class="btn btn-primary py-3 px-5"
+              >
+                Đăng ký tìm gia sư ngay
+                <i class="fa fa-search ms-2"></i>
+              </router-link>
             </div>
           </div>
         </div>
