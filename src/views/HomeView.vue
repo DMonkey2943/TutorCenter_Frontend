@@ -1,6 +1,6 @@
 <template>
   <!-- Spinner Start -->
-  <div
+  <!-- <div
     id="spinner"
     class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
   >
@@ -11,7 +11,7 @@
     >
       <span class="sr-only">Loading...</span>
     </div>
-  </div>
+  </div> -->
   <!-- Spinner End -->
 
   <!-- Carousel Start -->
@@ -320,7 +320,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, onBeforeUpdate } from "vue";
 import ClassService from "@/services/class.service";
 
 const classes = ref([]);
