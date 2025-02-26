@@ -76,6 +76,7 @@
               v-if="classItem.approvals?.[0]?.status == 0"
               type="submit"
               class="btn btn-outline-danger"
+              @click="unenrollClass(classItem.id)"
             >
               Hủy đăng ký
             </button>
@@ -116,6 +117,7 @@ import { defineProps, defineEmits } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import ApprovalService from "@/services/approval.service";
 import message from "ant-design-vue/es/message";
+import { Modal } from "ant-design-vue";
 
 const authStore = useAuthStore();
 
@@ -128,7 +130,7 @@ const props = defineProps({
 });
 
 // Emit sự kiện khi người dùng thay đổi trang
-const emit = defineEmits(["pageChange"]);
+const emit = defineEmits(["pageChange", "retrieveClasses"]);
 
 // Hàm xử lý chuyển trang, emit sự kiện 'pageChange'
 const onPageChange = (page) => {
@@ -158,5 +160,29 @@ const enrollClass = async (classId) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+const unenrollClass = async (classId) => {
+  Modal.confirm({
+    title: "Bạn có chắc sẽ hủy đăng ký nhận lớp học này?",
+    // icon: createVNode(ExclamationCircleOutlined),
+    okText: "Hủy đăng ký",
+    okType: "danger",
+    cancelText: "Cancel",
+    async onOk() {
+      try {
+        await ApprovalService.unenrollClass(classId);
+        message.success("Hủy đăng ký lớp học thành công");
+
+        // Gọi lên component cha để cập nhật danh sách lớp học
+        emit("retrieveClasses");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    onCancel() {
+      Modal.destroyAll();
+    },
+  });
 };
 </script>

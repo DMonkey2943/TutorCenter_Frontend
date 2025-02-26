@@ -31,6 +31,7 @@
       <TheClassList
         :classes="classes"
         @pageChange="handlePageChange"
+        @retrieveClasses="getEnrolledClasses"
       ></TheClassList>
     </div>
   </div>
