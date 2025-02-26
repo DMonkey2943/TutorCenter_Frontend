@@ -66,6 +66,14 @@
             <span class="fw-semibold">Yêu cầu: </span>
             {{ formattedLevelGender(classItem) }}
           </div>
+          <div
+            v-if="authStore.user_role == 'tutor' && classItem.status == 0"
+            class="mt-3 text-end"
+          >
+            <button type="submit" class="btn btn-success" @click="enrollClass(classItem.id)">
+              Đăng ký nhận lớp
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -84,6 +92,12 @@
 
 <script setup>
 import { defineProps, defineEmits } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import ApprovalService from "@/services/approval.service";
+import message from "ant-design-vue/es/message";
+
+
+const authStore = useAuthStore();
 
 // Nhận prop classes từ component cha
 const props = defineProps({
@@ -112,5 +126,17 @@ const formattedLevelGender = (classItem) => {
     return classItem.gender_tutor == "M" ? "Nam" : "Nữ";
   }
   return ""; // Trường hợp cả 2 đều null
+};
+
+const enrollClass = async (classId) => {
+  try {
+    const result = await ApprovalService.enrollClass({class_id: classId});
+    // console.log(result);
+    if (result.success) {
+      message.success(`Đăng ký nhận lớp học MS:${classId} thành công`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 </script>
