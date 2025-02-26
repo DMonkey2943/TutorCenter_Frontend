@@ -32,6 +32,11 @@ class ClassService {
   async getAllNewClasses(page = 1) {
     return (await this.api.get("/getAllNewClasses", { params: { page } })).data;
   }
+
+  async getEnrolledClasses(page = 1) {
+    return (await this.api.get("/getEnrolledClasses", { params: { page } }))
+      .data;
+  }
 }
 
 export default new ClassService();

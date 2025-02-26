@@ -66,11 +66,32 @@
             <span class="fw-semibold">Yêu cầu: </span>
             {{ formattedLevelGender(classItem) }}
           </div>
+
+          <!-- If user's role is tutor and class is not finish -->
           <div
             v-if="authStore.user_role == 'tutor' && classItem.status == 0"
             class="mt-3 text-end"
           >
-            <button type="submit" class="btn btn-success" @click="enrollClass(classItem.id)">
+            <button
+              v-if="classItem.approvals?.[0]?.status == 0"
+              type="submit"
+              class="btn btn-outline-danger"
+            >
+              Hủy đăng ký
+            </button>
+            <button
+              v-else-if="classItem.approvals?.[0]?.status == 1"
+              type="submit"
+              class="btn btn-success"
+            >
+              Xác nhận nhận lớp
+            </button>
+            <button
+              v-else
+              type="submit"
+              class="btn btn-primary"
+              @click="enrollClass(classItem.id)"
+            >
               Đăng ký nhận lớp
             </button>
           </div>
@@ -95,7 +116,6 @@ import { defineProps, defineEmits } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import ApprovalService from "@/services/approval.service";
 import message from "ant-design-vue/es/message";
-
 
 const authStore = useAuthStore();
 
@@ -130,7 +150,7 @@ const formattedLevelGender = (classItem) => {
 
 const enrollClass = async (classId) => {
   try {
-    const result = await ApprovalService.enrollClass({class_id: classId});
+    const result = await ApprovalService.enrollClass({ class_id: classId });
     // console.log(result);
     if (result.success) {
       message.success(`Đăng ký nhận lớp học MS:${classId} thành công`);
