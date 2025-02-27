@@ -1,9 +1,13 @@
 import { defineStore } from "pinia";
 import AuthService from "@/services/auth.service";
+import ParentService from "@/services/parent.service";
+import TutorService from "@/services/tutor.service";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     user: {},
+    parent_id: null,
+    tutor_id: null,
     token: localStorage.getItem("token"),
     loading: false,
     error: null,
@@ -40,6 +44,7 @@ export const useAuthStore = defineStore("auth", {
       if (this.token && !this.user?.id && !this.initialized) {
         try {
           await this.fetchUser();
+          await this.getIdByUserId();
         } catch (error) {
           this.logout();
         } finally {
@@ -134,6 +139,33 @@ export const useAuthStore = defineStore("auth", {
         this.initialized = false;
         localStorage.removeItem("token");
         this.loading = false;
+      }
+    },
+
+    async getIdByUserId() {
+      try {
+        const userId = this.user.id;
+        const role = this.user.role;
+
+        if (!userId) return;
+
+        if (role == "parent") {
+          // Lấy parent_id từ userId
+          const response = await ParentService.getByUserId(userId);
+          if (response.success) {
+            this.parent_id = response.data.id;
+          }
+        }
+        // else if (role == "tutor") {
+        //   // Lấy tutor_id từ userId
+        //   const response = await TutorService.getByUserId(userId);
+        //   if (response.success) {
+        //     this.tutor_id = response.data.id;
+        //   }
+        // }
+      } catch (error) {
+        console.error("Không thể lấy thông tin role ID:", error);
+        this.error = "Không thể lấy thông tin role ID";
       }
     },
   },

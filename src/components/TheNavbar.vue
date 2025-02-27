@@ -68,6 +68,15 @@
         >
 
         <router-link
+          :to="{ name: 'parent.registerClass' }"
+          v-if="authStore.user_role == 'parent'"
+          class="nav-item fw-semibold nav-link btn btn-primary text-white px-3 mt-2 mt-lg-0 d-lg-none"
+        >
+          Đăng ký lớp học
+          <i class="fa fa-arrow-right ms-2"></i>
+        </router-link>
+
+        <router-link
           :to="{ name: 'login' }"
           v-if="!authStore.isAuthenticated"
           class="nav-item fw-semibold nav-link btn btn-primary text-white px-3 mt-2 mt-lg-0 d-lg-none"
@@ -82,6 +91,15 @@
       >
         <router-link :to="{ name: 'login' }" class="text-white">
           Đăng nhập
+          <i class="fa fa-arrow-right ms-3"></i>
+        </router-link>
+      </button>
+      <button
+        v-if="authStore.user_role == 'parent'"
+        class="btn btn-primary rounded-pill px-3 d-none d-lg-block fw-semibold text-white"
+      >
+        <router-link :to="{ name: 'parent.registerClass' }" class="text-white">
+          Đăng ký lớp học
           <i class="fa fa-arrow-right ms-3"></i>
         </router-link>
       </button>

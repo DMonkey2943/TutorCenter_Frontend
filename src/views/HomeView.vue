@@ -54,6 +54,14 @@
               >Đăng ký tìm gia sư
               <i class="fa fa-search ms-1" aria-hidden="true"></i
             ></router-link>
+
+            <router-link
+              :to="{ name: 'parent.registerClass' }"
+              v-if="authStore.user_role == 'parent'"
+              class="btn btn-primary rounded-pill py-sm-3 px-sm-5 me-3 animated slideInLeft"
+              >Đăng ký lớp học
+              <i class="fa fa-search ms-1" aria-hidden="true"></i
+            ></router-link>
           </div>
         </div>
         <div class="carousel-item">
