@@ -329,7 +329,7 @@ const createClass = async () => {
     console.log(result);
     if (result.success) {
       message.success("Đăng ký lớp học thành công");
-      // router.push({ name: "" });
+      router.push({ name: "parent.classes" });
     }
   } catch (error) {
     console.log(error);

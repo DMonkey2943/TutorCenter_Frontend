@@ -33,6 +33,13 @@
           class="nav-item fw-semibold nav-link"
           >Lớp đã đăng ký nhận</router-link
         >
+
+        <router-link
+          v-if="authStore.user_role == 'parent'"
+          :to="{ name: 'parent.classes' }"
+          class="nav-item fw-semibold nav-link"
+          >Lớp đã đăng ký tìm gia sư</router-link
+        >
         <div v-if="authStore.user_id" class="nav-item fw-semibold dropdown">
           <a
             href="#"

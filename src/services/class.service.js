@@ -5,6 +5,20 @@ class ClassService {
     this.api = createApiClient(baseUrl);
   }
 
+  async getAllNewClasses(page = 1) {
+    return (await this.api.get("/getAllNewClasses", { params: { page } })).data;
+  }
+
+  async getEnrolledClasses(page = 1) {
+    return (await this.api.get("/getEnrolledClasses", { params: { page } }))
+      .data;
+  }
+
+  async getRegisteredClasses(page = 1) {
+    return (await this.api.get("/getRegisteredClasses", { params: { page } }))
+      .data;
+  }
+
   async index() {
     return (await this.api.get("/")).data;
   }
@@ -27,15 +41,6 @@ class ClassService {
 
   async get12Classes() {
     return (await this.api.get("/get12Classes")).data;
-  }
-
-  async getAllNewClasses(page = 1) {
-    return (await this.api.get("/getAllNewClasses", { params: { page } })).data;
-  }
-
-  async getEnrolledClasses(page = 1) {
-    return (await this.api.get("/getEnrolledClasses", { params: { page } }))
-      .data;
   }
 }
 

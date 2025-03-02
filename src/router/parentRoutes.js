@@ -13,6 +13,16 @@ export default [
         name: "parent.registerClass",
         component: () => import("../views/parent/RegisterClassView.vue"),
       },
+      {
+        path: "classes",
+        name: "parent.classes",
+        component: () => import("../views/parent/ClassesView.vue"),
+      },
+      {
+        path: "classes/:id",
+        name: "parent.classes.detail",
+        component: () => import("../views/parent/ClassDetailView.vue"),
+      },
     ],
   },
 ];
