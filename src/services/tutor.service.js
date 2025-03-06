@@ -30,6 +30,10 @@ class TutorService {
   async destroy(id) {
     return (await this.api.delete(`/${id}`)).data;
   }
+
+  async getByUserId(userId) {
+    return (await this.api.get(`/user/${userId}`)).data;
+  }
 }
 
 export default new TutorService();

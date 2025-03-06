@@ -84,9 +84,17 @@
               v-else-if="classItem.approvals?.[0]?.status == 1"
               type="submit"
               class="btn btn-success"
+              @click="confirmClassTeaching(classItem.id)"
             >
               Xác nhận nhận lớp
             </button>
+            <div
+              v-else-if="classItem.approvals?.[0]?.status == -1"
+              class="alert alert-danger text-center p-2"
+              role="alert"
+            >
+              Phụ huynh từ chối bạn
+            </div>
             <button
               v-else
               type="submit"
@@ -95,6 +103,24 @@
             >
               Đăng ký nhận lớp
             </button>
+          </div>
+          <div
+            v-if="authStore.user_role == 'tutor' && classItem.status == 1"
+            class="mt-3 text-end"
+          >
+            <button
+              v-if="authStore.tutor_id == classItem.tutor_id"
+              class="btn btn-outline-info"
+            >
+              Xem chi tiết
+            </button>
+            <div
+              v-else
+              class="alert alert-secondary text-center p-2"
+              role="alert"
+            >
+              Đã có gia sư nhận lớp này!
+            </div>
           </div>
         </div>
       </div>
@@ -118,6 +144,7 @@ import { useAuthStore } from "@/stores/auth";
 import ApprovalService from "@/services/approval.service";
 import message from "ant-design-vue/es/message";
 import { Modal } from "ant-design-vue";
+import ClassService from "@/services/class.service";
 
 const authStore = useAuthStore();
 
@@ -184,5 +211,20 @@ const unenrollClass = async (classId) => {
       Modal.destroyAll();
     },
   });
+};
+
+const confirmClassTeaching = async (classId) => {
+  try {
+    alert(classId);
+    const result = await ClassService.confirmClassTeaching(classId);
+    console.log(result);
+    if (result.success) {
+      message.success(`Nhận dạy lớp học MS:${classId} thành công`);
+      emit("retrieveClasses");
+    }
+  } catch (error) {
+    console.log(error);
+    emit("retrieveClasses");
+  }
 };
 </script>

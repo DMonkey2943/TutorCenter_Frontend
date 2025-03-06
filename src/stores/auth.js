@@ -156,13 +156,13 @@ export const useAuthStore = defineStore("auth", {
             this.parent_id = response.data.id;
           }
         }
-        // else if (role == "tutor") {
-        //   // Lấy tutor_id từ userId
-        //   const response = await TutorService.getByUserId(userId);
-        //   if (response.success) {
-        //     this.tutor_id = response.data.id;
-        //   }
-        // }
+        else if (role == "tutor") {
+          // Lấy tutor_id từ userId
+          const response = await TutorService.getByUserId(userId);
+          if (response.success) {
+            this.tutor_id = response.data.id;
+          }
+        }
       } catch (error) {
         console.error("Không thể lấy thông tin role ID:", error);
         this.error = "Không thể lấy thông tin role ID";
