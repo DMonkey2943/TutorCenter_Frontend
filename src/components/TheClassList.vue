@@ -111,6 +111,9 @@
             <button
               v-if="authStore.tutor_id == classItem.tutor_id"
               class="btn btn-outline-info"
+              data-bs-toggle="modal"
+              data-bs-target="#classDetailModal"
+              @click="getClassDetail(classItem.id)"
             >
               Xem chi tiết
             </button>
@@ -136,10 +139,58 @@
       show-quick-jumper
     />
   </div>
+  <!--Modal Class Detail -->
+  <div
+    class="modal fade"
+    id="classDetailModal"
+    tabindex="-1"
+    aria-labelledby="classDetailModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="classDetailModalLabel">
+            Chi tiết lớp học - MS: {{ classDetail.id }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            @click="clearClassDetail"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div v-if="loading" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div v-else>
+            <h5>Thông tin liên lạc phụ huynh</h5>
+            <p><strong>Phụ huynh:</strong> {{ classDetail.parent.name }}</p>
+            <p><strong>SĐT phụ huynh:</strong> {{ classDetail.parent.phone }}</p>
+            <p><strong>Địa chỉ lớp học:</strong> {{ classDetail.address }}</p>
+            <h5>Thông tin lớp học</h5>
+            <p><strong>Môn dạy:</strong> {{ classDetail.subjects.join(", ") }}</p>
+            <p><strong>Khối lớp dạy:</strong> {{ classDetail.grade }}</p>
+            <p><strong>Số học viên:</strong> {{ classDetail.num_of_students }}</p>
+            <p><strong>Học phí/buổi:</strong> {{ formattedTuition }}</p>
+            <p><strong>Thời gian:</strong> {{ formattedClassTimes }}</p>
+            <p><strong>Trình độ GS:</strong> {{ classDetail.level || "Tùy trung tâm" }}</p>
+            <p><strong>Giới tính GS:</strong> {{ formattedGender }}</p>
+            <p><strong>Yêu cầu khác:</strong> {{ classDetail.request }}</p>
+            <!-- <p><strong>Mô tả:</strong> {{ classDetail.description }}</p>
+            <p><strong>Ngày tạo:</strong> {{ classDetail.created_at }}</p> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits, reactive, ref, computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import ApprovalService from "@/services/approval.service";
 import message from "ant-design-vue/es/message";
@@ -215,7 +266,6 @@ const unenrollClass = async (classId) => {
 
 const confirmClassTeaching = async (classId) => {
   try {
-    alert(classId);
     const result = await ClassService.confirmClassTeaching(classId);
     console.log(result);
     if (result.success) {
@@ -227,4 +277,91 @@ const confirmClassTeaching = async (classId) => {
     emit("retrieveClasses");
   }
 };
+
+
+
+const classDetail = reactive({
+  id: "",
+  parent: {},
+  tutor: {},
+  subjects: [],
+  grade: "",
+  address: "",
+  num_of_students: "",
+  num_of_sessions: "",
+  tuition: "",
+  class_times: [],
+  level: "",
+  gender_tutor: "",
+  request: "",
+  status: "",});
+const loading = ref(false);
+const getClassDetail = async (classId) => {
+  loading.value = true;
+  try {
+    const result = await ClassService.show(classId);
+    console.log(result);
+    const dataClass = result.data;
+    console.log(dataClass);
+
+    classDetail.id = classId;
+    classDetail.parent = dataClass.parent?.user ?? "";
+    classDetail.tutor = dataClass.tutor?.user ?? "";
+    classDetail.subjects = Array.isArray(dataClass.subjects)
+      ? dataClass.subjects.map((subject) => subject.name)
+      : [];
+    classDetail.grade = dataClass.grade?.name ?? "";
+    classDetail.address =
+      dataClass.address.detail +
+        ", " +
+        dataClass.address.ward.name +
+        ", " +
+        dataClass.address.ward.district.name ?? "";
+    classDetail.num_of_students = dataClass.num_of_students;
+    classDetail.num_of_sessions = dataClass.num_of_sessions;
+    classDetail.tuition = dataClass.tuition;
+    classDetail.class_times = dataClass.class_times ?? "";
+    classDetail.gender_tutor = dataClass.gender_tutor ?? "";
+    classDetail.level = dataClass.level?.name ?? "";
+    classDetail.request = dataClass.request ?? "";
+    classDetail.status = dataClass.status ?? "";
+
+    console.log(classDetail);
+  } catch (error) {
+    console.error("Lỗi khi lấy chi tiết lớp:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+const clearClassDetail = () => {
+  classDetail.value = {};
+};
+const formattedSubjects = computed(() => {
+  return classDetail.subjects.join(", ");
+});
+const formattedClassTimes = computed(() => {
+  return classDetail.class_times
+    .map(
+      (time) =>
+        `${time.day} (${time.start.slice(0, 5)} - ${time.end.slice(0, 5)})`
+    )
+    .join("; ");
+});
+const formattedTuition = computed(() => {
+  return isNaN(classDetail.tuition)
+    ? classDetail.tuition
+    : new Intl.NumberFormat("vi-VN").format(classDetail.tuition) + "đ";
+});
+const formattedGender = computed(() => {
+  switch (classDetail.gender_tutor) {
+    case "M":
+      return "Nam";
+    case "F":
+      return "Nữ";
+    case "":
+    case null:
+    case undefined:
+      return "Tùy trung tâm";
+  }
+});
 </script>
