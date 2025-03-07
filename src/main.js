@@ -25,6 +25,9 @@ import {
   TimePicker,
   InputNumber,
   Pagination,
+  Form,
+  Popover,
+  Tag,
 } from "ant-design-vue";
 
 import { UploadOutlined } from "@ant-design/icons-vue";
@@ -58,6 +61,9 @@ app.use(Upload);
 app.use(TimePicker);
 app.use(InputNumber);
 app.use(Pagination);
+app.use(Form);
+app.use(Popover);
+app.use(Tag);
 
 app.component("UploadOutlined", UploadOutlined);
 

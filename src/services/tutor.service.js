@@ -5,6 +5,10 @@ class TutorService {
     this.api = createApiClient(baseUrl);
   }
 
+  async getAvailableTutors() {
+    return (await this.api.get("/available")).data;
+  }
+
   async index() {
     return (await this.api.get("/")).data;
   }
