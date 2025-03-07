@@ -13,6 +13,16 @@ export default [
         name: "tutor.enrolledClasses",
         component: () => import("../views/tutor/EnrolledClassesView.vue"),
       },
+      {
+        path: "profile",
+        name: "tutor.profile",
+        component: () => import("../views/tutor/profile/show.vue"),
+      },
+      {
+        path: "profile/edit",
+        name: "tutor.profile.edit",
+        component: () => import("../views/tutor/profile/edit.vue"),
+      },
     ],
   },
 ];

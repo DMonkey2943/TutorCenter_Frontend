@@ -51,11 +51,11 @@
             class="dropdown-menu rounded-0 rounded-bottom border-0 shadow-sm m-0"
           >
             <a href="" class="dropdown-item">Tài khoản</a>
-            <a
+            <router-link
               v-if="authStore.user_role == 'tutor'"
-              href=""
+              :to="{ name: 'tutor.profile' }"
               class="dropdown-item"
-              >Hồ sơ</a
+              >Hồ sơ</router-link
             >
             <div
               class="dropdown-item"
