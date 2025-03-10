@@ -7,6 +7,67 @@
     </div>
 
     <div v-if="status" class="row">
+      <div>
+        <div
+          v-if="tutorProfile.profile_status == 0"
+          class="tutor-approval mt-2"
+        >
+          <h5>Xét duyệt hồ sơ</h5>
+          <div class="d-flex gap-3 mb-3">
+            <a-button
+              type="primary"
+              @click="approveProfile(1)"
+              class="btn-approve"
+            >
+              Hồ sơ đạt yêu cầu
+            </a-button>
+
+            <a-button danger @click="showRejectModal = true" class="btn-reject">
+              Hồ sơ chưa đạt yêu cầu
+            </a-button>
+          </div>
+
+          <a-modal
+            v-model:visible="showRejectModal"
+            title="Lý do từ chối hồ sơ"
+            @ok="handleReject"
+            okText="Lưu"
+            cancelText="Hủy"
+          >
+            <div class="mb-3">
+              <label for="profile-reason" class="form-label fw-bold"
+                >Lý do:</label
+              >
+              <a-textarea
+                id="profile-reason"
+                v-model:value="profile_reason"
+                :rows="4"
+                placeholder="Nhập lý do từ chối hồ sơ..."
+              />
+            </div>
+          </a-modal>
+        </div>
+        <div v-else class="mt-2">
+          <div
+            v-if="tutorProfile.profile_status == 1"
+            class="alert alert-success"
+            role="alert"
+          >
+            <strong>Trạng thái hồ sơ:</strong> Đã duyệt
+          </div>
+          <div
+            v-else-if="tutorProfile.profile_status == -1"
+            class="alert alert-danger"
+            role="alert"
+          >
+            <strong>Trạng thái hồ sơ:</strong> Không đạt
+            <br />
+            <p class="ms-3 mb-0">
+              <strong>Lý do:</strong> {{ tutorProfile.profile_reason ?? "" }}
+            </p>
+          </div>
+        </div>
+      </div>
       <div class="col-12 col-lg-4">
         <div class="row mb-2">
           <div class="col-12 d-flex justify-content-center mb-3">
@@ -131,6 +192,7 @@ import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
 import TutorService from "@/services/tutor.service";
+import message from "ant-design-vue/es/message";
 
 useMenuAdmin().onSelectedKeys(["admin-tutors-profile"]);
 
@@ -178,6 +240,38 @@ const getTutorProfile = async () => {
   }
 };
 
+const showRejectModal = ref(false);
+const handleReject = () => {
+  approveProfile(-1);
+  showRejectModal.value = false;
+};
+const profile_reason = ref(null);
+const approveProfile = async (status) => {
+  try {
+    const id = route.params.id;
+    let result;
+    if (status == 1) {
+      result = await TutorService.approveProfile(id, {
+        profile_status: status,
+      });
+    } else if (status == -1) {
+      result = await TutorService.approveProfile(id, {
+        profile_status: status,
+        profile_reason: profile_reason.value,
+      });
+    }
+
+    if (result.success) {
+      message.success("Xét duyệt hồ sơ gia sư thành công");
+    }
+  } catch (error) {
+    console.log(error);
+    message.error("Có lỗi xảy ra khi xét duyệt hồ sơ");
+  } finally {
+    getTutorProfile();
+  }
+};
+
 const isZoomDegree = ref(false);
 const zoomDegree = () => {
   isZoomDegree.value = true;
@@ -199,5 +293,18 @@ onMounted(() => {
   max-width: 100%; /* Hình ảnh không vượt quá chiều rộng modal */
   height: auto; /* Giữ tỷ lệ hình ảnh */
   margin: 0 auto; /* Căn giữa hình ảnh */
+}
+
+.tutor-approval {
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+
+.btn-approve {
+  min-width: 160px;
+}
+
+.btn-reject {
+  min-width: 180px;
 }
 </style>

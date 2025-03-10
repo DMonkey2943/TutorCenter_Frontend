@@ -5,6 +5,10 @@ class TutorService {
     this.api = createApiClient(baseUrl);
   }
 
+  async approveProfile(id, request) {
+    return (await this.api.patch(`/${id}/approve`, request)).data;
+  }
+
   async getAvailableTutors() {
     return (await this.api.get("/available")).data;
   }
