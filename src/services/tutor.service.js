@@ -9,8 +9,8 @@ class TutorService {
     return (await this.api.patch(`/${id}/approve`, request)).data;
   }
 
-  async getAvailableTutors() {
-    return (await this.api.get("/available")).data;
+  async getAvailableTutors(request) {
+    return (await this.api.post("/available", request)).data;
   }
 
   async index() {

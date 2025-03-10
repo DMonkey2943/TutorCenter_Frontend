@@ -548,7 +548,16 @@ const searchTutors = async () => {
   class1.tutors = []; // Reset selected tutors when searching again
 
   try {
-    const response = await TutorService.getAvailableTutors();
+    const searchData = {
+      district_id: class1.district_id,
+      subjects: class1.subjects,
+      grade_id: class1.grade_id,
+      level_id: class1.level_id,
+      gender: class1.gender,
+    };
+    console.log(searchData);
+
+    const response = await TutorService.getAvailableTutors(searchData);
     console.log(response);
 
     tutors.value = response.data;
