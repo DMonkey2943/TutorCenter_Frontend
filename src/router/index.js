@@ -45,18 +45,19 @@ const router = createRouter({
 });
 
 // Navigation Guards
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
+
+  if (!authStore.initialized) {
+    await authStore.init();
+  }
+
   const isAuthenticated = authStore.isAuthenticated;
   const userRole = authStore.user_role;
 
   // 1. Kiểm tra routes yêu cầu guest (như login, register)
-  if (to.meta.requiresGuest) {
-    if (isAuthenticated) {
-      // Nếu đã đăng nhập, chuyển về trang home
-      return next({ name: "home" });
-    }
-    return next();
+  if (to.meta.requiresGuest && isAuthenticated) {
+    return next({ name: "home" });
   }
 
   // 2. Kiểm tra routes yêu cầu authentication

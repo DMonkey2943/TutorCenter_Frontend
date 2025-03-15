@@ -176,6 +176,9 @@ import message from "ant-design-vue/es/message";
 import ClassService from "@/services/class.service";
 import TutorService from "@/services/tutor.service";
 import ApprovalService from "@/services/approval.service";
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 const router = useRouter();
 const route = useRoute();
@@ -205,6 +208,17 @@ const getClass = async () => {
     const id = route.params.id;
 
     const result = await ClassService.show(id);
+
+    if (authStore.parent_id != result.data.parent_id) {
+      router.push({
+        name: "notfound",
+        params: {
+          pathMatch: route.path.split("/").slice(1),
+        },
+        query: route.query,
+        hash: route.hash,
+      });
+    }
 
     const dataClass = result.data;
     console.log(dataClass);

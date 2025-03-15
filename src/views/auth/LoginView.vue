@@ -96,8 +96,8 @@ const validationErrors = ref({});
 const handleLogin = async () => {
   const success = await authStore.login(user);
   if (success) {
-    await authStore.fetchUser();
-    await authStore.getIdByUserId();
+    // await authStore.fetchUser();
+    // await authStore.getIdByUserId();
     message.success("Đăng nhập thành công");
     if (authStore.user_role === "admin") {
       router.push({ name: "admin.dashboard" });

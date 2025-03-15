@@ -28,6 +28,7 @@ import {
   Form,
   Popover,
   Tag,
+  Spin,
 } from "ant-design-vue";
 
 import { UploadOutlined } from "@ant-design/icons-vue";
@@ -64,6 +65,7 @@ app.use(Pagination);
 app.use(Form);
 app.use(Popover);
 app.use(Tag);
+app.use(Spin);
 
 app.component("UploadOutlined", UploadOutlined);
 

@@ -80,7 +80,8 @@ export const useAuthStore = defineStore("auth", {
 
         this.token = response.token;
         localStorage.setItem("token", this.token);
-
+        await this.fetchUser();
+        await this.getIdByUserId();
         return true;
       } catch (error) {
         // console.log(error);
@@ -135,7 +136,7 @@ export const useAuthStore = defineStore("auth", {
         return false;
       } finally {
         this.token = null;
-        this.user = null;
+        this.user = {};
         this.initialized = false;
         localStorage.removeItem("token");
         this.loading = false;
