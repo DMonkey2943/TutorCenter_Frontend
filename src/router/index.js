@@ -4,6 +4,7 @@ import authRoutes from "./authRoutes";
 import parentRoutes from "./parentRoutes";
 import tutorRoutes from "./tutorRoutes";
 import adminRoutes from "./adminRoutes";
+import accountRoutes from "./accountRoutes";
 import { useAuthStore } from "@/stores/auth";
 
 const routes = [
@@ -15,6 +16,11 @@ const routes = [
   ...authRoutes.map((route) => ({
     ...route,
     meta: { ...route.meta, requiresAuth: false, requiresGuest: true },
+  })),
+
+  ...accountRoutes.map((route) => ({
+    ...route,
+    meta: { ...route.meta, requiresAuth: true},
   })),
 
   ...parentRoutes.map((route) => ({
