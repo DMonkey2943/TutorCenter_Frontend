@@ -25,6 +25,27 @@
             </small>
           </div>
         </div>
+        <!-- Start date -->
+        <div class="row mb-3">
+          <div class="col-12 col-md-3 text-start text-md-end">
+            <label for="">
+              <span class="text-danger">*</span>
+              <span>Ngày dự kiến bắt đầu:</span>
+            </label>
+          </div>
+          <div class="col-12 col-md-8">
+            <a-date-picker
+              v-model:value="class1.start_date"
+              :disabled-date="disabledStartDate"
+              format="YYYY-MM-DD"
+              placeholder="Chọn ngày bắt đầu"
+            />
+            <div class="w-100"></div>
+            <small v-if="errors.start_date" class="text-danger">
+              {{ errors.start_date[0] }}
+            </small>
+          </div>
+        </div>
 
         <!-- Address (deatail, ward_id, district_id) -->
         <div class="row mb-3">
@@ -313,6 +334,8 @@ const class1 = reactive({
   district_id: null,
   subjects: [],
   tuition: null,
+  start_date: "",
+  end_date: "",
   level_id: null,
   gender_tutor: null,
   request: null,
@@ -327,6 +350,7 @@ const _grades = ref([]);
 const _levels = ref([]);
 
 const errors = ref({});
+const dateFormat = "YYYY-MM-DD";
 
 const getClass = async () => {
   try {
@@ -345,6 +369,10 @@ const getClass = async () => {
       ? dataClass.subjects.map((subject) => subject.id)
       : [];
     class1.tuition = dataClass.tuition ?? null;
+    class1.start_date = dataClass.start_date ? ref(dayjs(dataClass.start_date, dateFormat)) : null;
+    // tutorProfile.birthday = dataProfile.birthday
+    //   ? ref(dayjs(dataProfile.birthday, dateFormat))
+    //   : null;
     class1.level_id = dataClass.level_id ?? null;
     class1.gender_tutor = dataClass.gender_tutor ?? null;
     class1.request = dataClass.request ?? null;
@@ -489,6 +517,12 @@ watch(
   },
   { immediate: true }
 ); // `immediate: true` giúp gọi ngay khi component mounted
+// Hàm chặn các ngày bắt đầu lớp học không hợp lệ
+
+const disabledStartDate = (current) => {
+  // Không cho chọn các ngày trước 2 ngày kể từ hôm nay
+  return current && current.isBefore(dayjs().add(2, "day").startOf("day"));
+};
 
 onMounted(() => {
   getClass();

@@ -33,6 +33,10 @@
           <span class="fw-bold">Thời gian: </span>
           <span>{{ formattedClassTimes }}</span>
         </div>
+        <div>
+          <span class="fw-bold">Ngày dự kiến bắt đầu: </span>
+          <span>{{ class2.start_date }}</span>
+        </div>
 
         <h3 class="fw-bold mt-4">Yêu cầu gia sư</h3>
         <div>
@@ -105,6 +109,7 @@ const class2 = reactive({
   num_of_students: "",
   num_of_sessions: "",
   tuition: "",
+  start_date: "",
   class_times: [],
   level: "",
   gender_tutor: "",
@@ -139,6 +144,7 @@ const getClass = async () => {
     class2.num_of_sessions = dataClass.num_of_sessions;
     class2.tuition = dataClass.tuition;
     class2.class_times = dataClass.class_times ?? "";
+    class2.start_date = dataClass.start_date ?? "";
     class2.gender_tutor = dataClass.gender_tutor ?? "";
     class2.level = dataClass.level?.name ?? "";
     class2.request = dataClass.request ?? "";

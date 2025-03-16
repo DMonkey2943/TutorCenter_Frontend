@@ -63,6 +63,10 @@
             }}
           </div>
           <div>
+            <span class="fw-semibold">Ngày dự kiến bắt đầu: </span>
+            {{ classItem.start_date }}
+          </div>
+          <div>
             <span class="fw-semibold">Yêu cầu: </span>
             {{ formattedLevelGender(classItem) }}
           </div>

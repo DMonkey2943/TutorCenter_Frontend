@@ -26,6 +26,27 @@
           </div>
         </div>
 
+        <div class="row mb-3">
+          <div class="col-12 col-md-3 text-start text-md-end">
+            <label for="">
+              <span class="text-danger">*</span>
+              <span>Ngày dự kiến bắt đầu:</span>
+            </label>
+          </div>
+          <div class="col-12 col-md-8">
+            <a-date-picker
+              v-model:value="class1.start_date"
+              :disabled-date="disabledStartDate"
+              format="YYYY-MM-DD"
+              placeholder="Chọn ngày bắt đầu"
+            />
+            <div class="w-100"></div>
+            <small v-if="errors.start_date" class="text-danger">
+              {{ errors.start_date[0] }}
+            </small>
+          </div>
+        </div>
+
         <!-- Address (deatail, ward_id, district_id) -->
         <div class="row mb-3">
           <div class="col-12 col-md-3 text-start text-md-end">
@@ -310,6 +331,8 @@ const class1 = reactive({
   district_id: null,
   subjects: [],
   tuition: null,
+  start_date: null,
+  end_date: null,
   level_id: null,
   gender_tutor: null,
   request: null,
@@ -436,6 +459,12 @@ watch(
   },
   { immediate: true }
 ); // `immediate: true` giúp gọi ngay khi component mounted
+
+// Hàm chặn các ngày bắt đầu lớp học không hợp lệ
+const disabledStartDate = (current) => {
+  // Không cho chọn các ngày trước 2 ngày kể từ hôm nay
+  return current && current.isBefore(dayjs().add(2, "day").startOf("day"));
+};
 
 onMounted(() => {
   getParents();
