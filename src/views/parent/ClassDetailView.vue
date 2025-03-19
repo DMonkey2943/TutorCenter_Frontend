@@ -81,7 +81,7 @@
             </div>
           </div>
           <div class="col-12 col-lg-4 col-xxl-5">
-            <div v-if="class2.status == 1">
+            <div v-if="class2.status == 1 || class2.status == 2">
               <h3 class="fw-bold mt-4">Gia sư nhận lớp</h3>
               <div>
                 <span class="fw-bold">Gia sư: </span>
@@ -90,6 +90,20 @@
               <div>
                 <span class="fw-bold">SĐT liên hệ: </span>
                 <span>{{ class2.tutor.phone }}</span>
+              </div>
+              <!-- Hiển thị đánh giá -->
+              <div class="mt-2" v-if="class2.status == 2">
+                <span class="fw-bold">Đánh giá: </span>
+                <template v-if="tutorRating">
+                  <a-rate :value="tutorRating.stars" disabled />
+                  <span class="ms-2">({{ tutorRating.stars }}/5)</span>
+                  <div v-if="tutorRating.comment" class="mt-1">
+                    <span class="fst-italic">{{ tutorRating.comment }}</span>
+                  </div>
+                </template>
+                <template v-else>
+                  <span class="text-muted">Chưa có đánh giá</span>
+                </template>
               </div>
             </div>
             <div v-else>
@@ -161,6 +175,15 @@
 
         <div class="row mt-3">
           <div class="col-12 d-grid d-sm-flex justify-content-sm-end mx-auto">
+            <a-button
+              v-if="showCompleteButton"
+              type="primary"
+              @click="showCompleteModal"
+              class="me-4"
+            >
+              Kết thúc lớp học
+            </a-button>
+
             <a-button class="me-sm-2 mb-2">
               <router-link :to="{ name: 'parent.classes' }">
                 <span>Trở về</span>
@@ -168,6 +191,35 @@
             </a-button>
           </div>
         </div>
+
+        <!-- Modal xác nhận kết thúc lớp học và đánh giá gia sư -->
+        <a-modal
+          v-model:visible="completeModalVisible"
+          title="Kết thúc lớp học"
+          @ok="handleCompleteClass"
+          :confirmLoading="confirmLoading"
+          width="700px"
+        >
+          <p>
+            Bạn có chắc chắn muốn kết thúc lớp học này? Sau khi kết thúc, vui
+            lòng đánh giá gia sư.
+          </p>
+
+          <!-- Form đánh giá gia sư -->
+          <a-form :model="ratingForm" layout="vertical">
+            <a-form-item label="Đánh giá" name="rating">
+              <a-rate v-model:value="ratingForm.stars" />
+            </a-form-item>
+
+            <a-form-item label="Nhận xét" name="comment">
+              <a-textarea
+                v-model:value="ratingForm.comment"
+                :rows="4"
+                placeholder="Nhận xét về gia sư (không bắt buộc)"
+              />
+            </a-form-item>
+          </a-form>
+        </a-modal>
       </a-card>
     </div>
   </div>
@@ -180,6 +232,7 @@ import message from "ant-design-vue/es/message";
 import ClassService from "@/services/class.service";
 import TutorService from "@/services/tutor.service";
 import ApprovalService from "@/services/approval.service";
+import RateService from "@/services/rate.service";
 import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
@@ -205,6 +258,8 @@ const class2 = reactive({
   request: "",
   status: "",
   approvals: [],
+  tutor_id: "",
+  parent_id: "",
 });
 
 const status = ref(0);
@@ -232,6 +287,9 @@ const getClass = async () => {
     class2.id = id;
     class2.parent = dataClass.parent?.user ?? "";
     class2.tutor = dataClass.tutor?.user ?? "";
+    class2.parent_id = dataClass.parent_id ?? "";
+    class2.tutor_id = dataClass.tutor_id ?? "";
+
     class2.subjects = Array.isArray(dataClass.subjects)
       ? dataClass.subjects.map((subject) => subject.name)
       : [];
@@ -254,6 +312,8 @@ const getClass = async () => {
     class2.approvals = dataClass.approvals ?? [];
 
     console.log(class2);
+
+    fetchTutorRating();
   } catch (error) {
     console.log(error);
     router.push({
@@ -333,6 +393,81 @@ const formattedGender = computed(() => {
       return "Tùy trung tâm";
   }
 });
+
+const completeModalVisible = ref(false);
+const confirmLoading = ref(false);
+// Form đánh giá
+const ratingForm = reactive({
+  stars: 5,
+  comment: "",
+  tutor_id: null,
+  parent_id: null,
+  class_id: null,
+});
+
+const showCompleteButton = computed(() => {
+  // Kiểm tra đủ điều kiện: đã giao, đã bắt đầu, và chưa kết thúc
+  const today = new Date().toISOString().split("T")[0];
+  return (
+    class2.status == 1 &&
+    class2.start_date &&
+    class2.start_date <= today &&
+    !class2.end_date
+  );
+});
+
+// Hiển thị modal kết thúc lớp học
+const showCompleteModal = () => {
+  ratingForm.tutor_id = class2.tutor_id;
+  ratingForm.parent_id = class2.parent_id;
+  ratingForm.class_id = class2.id;
+  completeModalVisible.value = true;
+};
+
+// Xử lý kết thúc lớp học và đánh giá
+const handleCompleteClass = async () => {
+  confirmLoading.value = true;
+
+  try {
+    // Bước 1: Kết thúc lớp học
+    const completeResponse = await ClassService.completeClass(class2.id);
+
+    // Bước 2: Đánh giá gia sư
+    await RateService.store(ratingForm);
+
+    message.success("Lớp học đã kết thúc và đánh giá đã được gửi thành công");
+
+    // Cập nhật dữ liệu lớp học
+    // classData.value = completeResponse.data.class;
+    completeModalVisible.value = false;
+
+    // Làm mới dữ liệu
+  } catch (error) {
+    message.error(
+      "Có lỗi xảy ra: " + (error.response?.data?.message || "Vui lòng thử lại")
+    );
+  } finally {
+    getClass();
+    confirmLoading.value = false;
+  }
+};
+
+const tutorRating = ref(null);
+// Hàm để lấy đánh giá của gia sư
+const fetchTutorRating = async () => {
+  // if(class2.status)
+  try {    
+    const response = await RateService.show(class2.id);
+    
+    console.log(response);
+
+    if (response.success) {
+      tutorRating.value = response.data ?? null;
+    }
+  } catch (error) {
+    console.error('Không thể tải đánh giá gia sư:', error);
+  }
+};
 
 onMounted(() => {
   getClass();

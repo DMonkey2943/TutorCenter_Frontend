@@ -23,6 +23,10 @@ class ClassService {
     return (await this.api.patch(`/confirmClassTeaching/${classId}`)).data;
   }
 
+  async completeClass(classId) {
+    return (await this.api.patch(`/completeClass/${classId}`)).data;
+  }
+
   async index() {
     return (await this.api.get("/")).data;
   }

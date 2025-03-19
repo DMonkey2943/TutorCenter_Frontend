@@ -23,6 +23,18 @@
           >
             Đã giao
           </p>
+          <p
+            v-else-if="classItem.status == 2"
+            class="p-2 m-0 bg-primary text-white rounded"
+          >
+            Đã kết thúc
+          </p>
+          <p
+            v-else-if="classItem.status == -1"
+            class="p-2 m-0 bg-secondary text-white rounded"
+          >
+            Đã hủy
+          </p>
         </div>
         <div class="card-body">
           <div>
