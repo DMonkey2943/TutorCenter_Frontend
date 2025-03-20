@@ -62,7 +62,7 @@
           <span class="fw-bold">SĐT liên hệ: </span>
           <span>{{ class2.parent.phone }}</span>
         </div>
-        <span v-if="class2.status == 1">
+        <span v-if="class2.status == 1 || class2.status == 2">
           <h3 class="fw-bold mt-4">Thông tin gia sư nhận lớp</h3>
           <div>
             <span class="fw-bold">Gia sư: </span>
@@ -72,6 +72,20 @@
             <span class="fw-bold">SĐT liên hệ: </span>
             <span>{{ class2.tutor.phone }}</span>
           </div>
+          <!-- Hiển thị đánh giá -->
+            <div class="mb-4" v-if="class2.status == 2">
+              <span class="fw-bold">Phụ huynh đánh giá: </span>
+              <template v-if="tutorRating">
+                <a-rate :value="tutorRating.stars" disabled />
+                <span class="ms-2">({{ tutorRating.stars }}/5)</span>
+                <div v-if="tutorRating.comment" class="mt-1">
+                  <span class="fst-italic">{{ tutorRating.comment }}</span>
+                </div>
+              </template>
+              <template v-else>
+                <span class="text-muted">Chưa có đánh giá</span>
+              </template>
+            </div>
         </span>
       </div>
     </div>
@@ -93,6 +107,7 @@ import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
 import ClassService from "@/services/class.service";
+import RateService from "@/services/rate.service";
 
 useMenuAdmin().onSelectedKeys(["admin-classes"]);
 
@@ -115,6 +130,8 @@ const class2 = reactive({
   gender_tutor: "",
   request: "",
   status: "",
+  tutor_id: "",
+  parent_id: "",
 });
 const status = ref(0);
 
@@ -130,6 +147,8 @@ const getClass = async () => {
     class2.id = id;
     class2.parent = dataClass.parent?.user ?? "";
     class2.tutor = dataClass.tutor?.user ?? "";
+    class2.parent_id = dataClass.parent_id ?? "";
+    class2.tutor_id = dataClass.tutor_id ?? "";
     class2.subjects = Array.isArray(dataClass.subjects)
       ? dataClass.subjects.map((subject) => subject.name)
       : [];
@@ -149,6 +168,10 @@ const getClass = async () => {
     class2.level = dataClass.level?.name ?? "";
     class2.request = dataClass.request ?? "";
     class2.status = dataClass.status ?? "";
+
+    if (class2.status == 2) {
+      fetchTutorRating();
+    }
 
     console.log(class2);
   } catch (error) {
@@ -192,6 +215,22 @@ const formattedGender = computed(() => {
       return "Tùy trung tâm";
   }
 });
+
+const tutorRating = ref(null);
+// Hàm để lấy đánh giá của gia sư
+const fetchTutorRating = async () => {
+  try {
+    const response = await RateService.show(class2.id);
+
+    console.log(response);
+
+    if (response.success) {
+      tutorRating.value = response.data ?? null;
+    }
+  } catch (error) {
+    console.error("Không thể tải đánh giá gia sư:", error);
+  }
+};
 
 onMounted(() => {
   getClass();

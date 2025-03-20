@@ -23,6 +23,12 @@
           >
             Đã giao
           </p>
+          <p
+            v-else-if="classItem.status == 2"
+            class="p-2 m-0 bg-primary text-white rounded"
+          >
+            Đã kết thúc
+          </p>
         </div>
         <div class="card-body">
           <div>
@@ -109,7 +115,10 @@
             </button>
           </div>
           <div
-            v-if="authStore.user_role == 'tutor' && classItem.status == 1"
+            v-if="
+              authStore.user_role == 'tutor' &&
+              (classItem.status == 1 || classItem.status == 2)
+            "
             class="mt-3 text-end"
           >
             <button
@@ -171,17 +180,40 @@
             </div>
           </div>
           <div v-else>
+            <!-- Hiển thị đánh giá -->
+            <div class="mb-4" v-if="classDetail.status == 2">
+              <span class="fw-bold">Phụ huynh đánh giá: </span>
+              <template v-if="tutorRating">
+                <a-rate :value="tutorRating.stars" disabled />
+                <span class="ms-2">({{ tutorRating.stars }}/5)</span>
+                <div v-if="tutorRating.comment" class="mt-1">
+                  <span class="fst-italic">{{ tutorRating.comment }}</span>
+                </div>
+              </template>
+              <template v-else>
+                <span class="text-muted">Chưa có đánh giá</span>
+              </template>
+            </div>
             <h5>Thông tin liên lạc phụ huynh</h5>
             <p><strong>Phụ huynh:</strong> {{ classDetail.parent.name }}</p>
-            <p><strong>SĐT phụ huynh:</strong> {{ classDetail.parent.phone }}</p>
+            <p>
+              <strong>SĐT phụ huynh:</strong> {{ classDetail.parent.phone }}
+            </p>
             <p><strong>Địa chỉ lớp học:</strong> {{ classDetail.address }}</p>
             <h5>Thông tin lớp học</h5>
-            <p><strong>Môn dạy:</strong> {{ classDetail.subjects.join(", ") }}</p>
+            <p>
+              <strong>Môn dạy:</strong> {{ classDetail.subjects.join(", ") }}
+            </p>
             <p><strong>Khối lớp dạy:</strong> {{ classDetail.grade }}</p>
-            <p><strong>Số học viên:</strong> {{ classDetail.num_of_students }}</p>
+            <p>
+              <strong>Số học viên:</strong> {{ classDetail.num_of_students }}
+            </p>
             <p><strong>Học phí/buổi:</strong> {{ formattedTuition }}</p>
             <p><strong>Thời gian:</strong> {{ formattedClassTimes }}</p>
-            <p><strong>Trình độ GS:</strong> {{ classDetail.level || "Tùy trung tâm" }}</p>
+            <p>
+              <strong>Trình độ GS:</strong>
+              {{ classDetail.level || "Tùy trung tâm" }}
+            </p>
             <p><strong>Giới tính GS:</strong> {{ formattedGender }}</p>
             <p><strong>Yêu cầu khác:</strong> {{ classDetail.request }}</p>
             <!-- <p><strong>Mô tả:</strong> {{ classDetail.description }}</p>
@@ -200,6 +232,7 @@ import ApprovalService from "@/services/approval.service";
 import message from "ant-design-vue/es/message";
 import { Modal } from "ant-design-vue";
 import ClassService from "@/services/class.service";
+import RateService from "@/services/rate.service";
 
 const authStore = useAuthStore();
 
@@ -282,8 +315,6 @@ const confirmClassTeaching = async (classId) => {
   }
 };
 
-
-
 const classDetail = reactive({
   id: "",
   parent: {},
@@ -298,7 +329,10 @@ const classDetail = reactive({
   level: "",
   gender_tutor: "",
   request: "",
-  status: "",});
+  status: "",
+  tutor_id: "",
+  parent_id: "",
+});
 const loading = ref(false);
 const getClassDetail = async (classId) => {
   loading.value = true;
@@ -311,6 +345,8 @@ const getClassDetail = async (classId) => {
     classDetail.id = classId;
     classDetail.parent = dataClass.parent?.user ?? "";
     classDetail.tutor = dataClass.tutor?.user ?? "";
+    classDetail.parent_id = dataClass.parent_id ?? "";
+    classDetail.tutor_id = dataClass.tutor_id ?? "";
     classDetail.subjects = Array.isArray(dataClass.subjects)
       ? dataClass.subjects.map((subject) => subject.name)
       : [];
@@ -330,6 +366,9 @@ const getClassDetail = async (classId) => {
     classDetail.request = dataClass.request ?? "";
     classDetail.status = dataClass.status ?? "";
 
+    if (classDetail.status == 2) {
+      fetchTutorRating();
+    }
     console.log(classDetail);
   } catch (error) {
     console.error("Lỗi khi lấy chi tiết lớp:", error);
@@ -368,4 +407,20 @@ const formattedGender = computed(() => {
       return "Tùy trung tâm";
   }
 });
+
+const tutorRating = ref(null);
+// Hàm để lấy đánh giá của gia sư
+const fetchTutorRating = async () => {
+  try {
+    const response = await RateService.show(classDetail.id);
+
+    console.log(response);
+
+    if (response.success) {
+      tutorRating.value = response.data ?? null;
+    }
+  } catch (error) {
+    console.error("Không thể tải đánh giá gia sư:", error);
+  }
+};
 </script>
