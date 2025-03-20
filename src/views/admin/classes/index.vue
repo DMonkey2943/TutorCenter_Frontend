@@ -25,6 +25,11 @@
                 class="px-2 py-1 rounded badge text-bg-success"
                 >Đã giao</span
               >
+              <span
+                v-else-if="record.status == 2"
+                class="px-2 py-1 rounded badge text-bg-primary"
+                >Đã kết thúc</span
+              >
               <span v-else class="px-2 py-1 rounded badge text-bg-danger"
                 >Thất bại</span
               >

@@ -144,6 +144,16 @@
           <span class="fw-bold">Học phí/buổi: </span>
           <span>{{ tutorProfile.tuition.range }}</span>
         </div>
+
+        <div class="mt-3">
+          <span class="fw-bold">Đánh giá: </span>
+          <span>
+            <a-rate :value="averageRating" allowHalf disabled />
+            <span class="ms-2"
+              >{{ averageRating }} ({{ totalRatings }} đánh giá)</span
+            >
+          </span>
+        </div>
       </div>
     </div>
 
@@ -217,6 +227,22 @@ const fullDegreeUrl = computed(() => {
   return `${backendHost}/storage/${tutorProfile.value.degree}`;
 });
 
+const averageRating = ref(0);
+const totalRatings = ref(0);
+const fetchTutorRating = async () => {
+  try {
+    const id = route.params.id;
+    const response = await TutorService.averageRating(id);
+    // console.log(response);
+    if (response.success) {
+      averageRating.value = response.data.average_rating;
+      totalRatings.value = response.data.total_ratings;
+    }
+  } catch (error) {
+    console.error("Không thể lấy đánh giá trung bình:", error);
+  }
+};
+
 const getTutorProfile = async () => {
   try {
     const id = route.params.id;
@@ -226,6 +252,7 @@ const getTutorProfile = async () => {
     }
     tutorProfile.value = result.data;
     tutorName.value = result.data.user.name;
+    fetchTutorRating();
     // console.log(tutorProfile.value);
   } catch (error) {
     console.log(error);

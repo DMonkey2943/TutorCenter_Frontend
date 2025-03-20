@@ -9,6 +9,10 @@ class TutorService {
     return (await this.api.patch(`/${id}/approve`, request)).data;
   }
 
+  async averageRating(id) {
+    return (await this.api.get(`/${id}/averageRating`)).data;
+  }
+
   async getAvailableTutors(request) {
     return (await this.api.post("/available", request)).data;
   }
