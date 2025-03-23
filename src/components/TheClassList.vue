@@ -216,9 +216,83 @@
             </p>
             <p><strong>Giới tính GS:</strong> {{ formattedGender }}</p>
             <p><strong>Yêu cầu khác:</strong> {{ classDetail.request }}</p>
-            <!-- <p><strong>Mô tả:</strong> {{ classDetail.description }}</p>
-            <p><strong>Ngày tạo:</strong> {{ classDetail.created_at }}</p> -->
           </div>
+        </div>
+        <div class="modal-footer" v-if="classDetail.status==1">
+          <button
+            type="button"
+            class="btn btn-warning"
+            data-bs-toggle="modal"
+            data-bs-target="#reportModal"
+          >
+            Báo cáo vấn đề
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Report -->
+  <div
+    class="modal fade"
+    id="reportModal"
+    tabindex="-1"
+    aria-labelledby="reportModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="reportModalLabel">
+            Báo cáo vấn đề - MS: {{ classDetail.id }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            @click="resetReportForm"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="submitReport">
+            <div class="mb-3">
+              <label for="reportContent" class="form-label fw-bold">
+                Nội dung <span class="text-danger">*</span>
+              </label>
+              <textarea
+                v-model="reportForm.content"
+                class="form-control"
+                id="reportContent"
+                rows="4"
+                required
+                placeholder="Vui lòng mô tả chi tiết vấn đề bạn gặp phải..."
+              ></textarea>
+            </div>
+
+            <div v-if="reportForm.loading" class="text-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Đang xử lý...</span>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            @click="resetReportForm"
+          >
+            Hủy
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            :disabled="reportForm.loading"
+            @click="submitReport"
+          >
+            Gửi báo cáo
+          </button>
         </div>
       </div>
     </div>
@@ -233,6 +307,7 @@ import message from "ant-design-vue/es/message";
 import { Modal } from "ant-design-vue";
 import ClassService from "@/services/class.service";
 import RateService from "@/services/rate.service";
+import ReportService from "@/services/report.service";
 
 const authStore = useAuthStore();
 
@@ -423,4 +498,49 @@ const fetchTutorRating = async () => {
     console.error("Không thể tải đánh giá gia sư:", error);
   }
 };
+
+// Report Form
+const reportForm = ref({
+  tutor_id: null,
+  class_id: null,
+  content: '',
+  loading: false
+})
+
+// Reset form khi đóng modal
+const resetReportForm = () => {
+  reportForm.value = {
+    content: '',
+    loading: false
+  }
+}
+
+// Xử lý gửi báo cáo
+const submitReport = async () => {
+  if (!reportForm.value.content) {
+    message.error('Vui lòng điền nội dung')
+    return
+  }
+
+  try {
+    reportForm.value.loading = true
+    reportForm.value.tutor_id = classDetail.tutor_id;
+    reportForm.value.class_id = classDetail.id;
+
+    console.log(reportForm.value);
+    
+    const response = await ReportService.store(reportForm.value);
+
+    if (response.success) {
+      message.success('Báo cáo đã được gửi thành công')
+      bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide()
+      resetReportForm()      
+    }
+  } catch (error) {
+    message.error('Không thể gửi báo cáo: ' + error.message)
+  } finally {
+    reportForm.value.loading = false
+  }
+}
+
 </script>
