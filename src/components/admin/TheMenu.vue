@@ -49,6 +49,12 @@ const items = reactive([
     title: "Quản lý lớp học",
     pathName: "admin.classes",
   },
+  {
+    key: "admin-reports",
+    label: "Quản lý báo cáo lớp học của gia sư",
+    title: "Quản lý báo cáo lớp học của gia sư",
+    pathName: "admin.reports",
+  },
 ]);
 
 const onMenuClick = (info) => {

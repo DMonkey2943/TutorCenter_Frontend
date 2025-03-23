@@ -79,6 +79,13 @@ export default [
         name: "admin.classes.edit",
         component: () => import("../views/admin/classes/edit.vue"),
       },
+
+      //   Quản lý báo cáo lớp học của gia sư
+      {
+        path: "reports",
+        name: "admin.reports",
+        component: () => import("../views/admin/reports/index.vue"),
+      },
     ],
   },
 ];
