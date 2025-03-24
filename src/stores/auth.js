@@ -13,6 +13,7 @@ export const useAuthStore = defineStore("auth", {
     error: null,
     validationErrors: {},
     initialized: false,
+    pageLoading: false, // Trạng thái cho biết đang tải auth
   }),
 
   getters: {
@@ -36,11 +37,16 @@ export const useAuthStore = defineStore("auth", {
 
     // Lấy thông tin lỗi
     getError: (state) => state.error,
+
+    // Kiểm tra auth đang khởi tạo
+    isPageLoading: (state) => state.pageLoading || !state.initialized,
   },
 
   actions: {
     // Khởi tạo store
     async init() {
+      this.pageLoading = true; // Bật trạng thái loading
+
       if (this.token && !this.user?.id && !this.initialized) {
         try {
           await this.fetchUser();
@@ -49,7 +55,12 @@ export const useAuthStore = defineStore("auth", {
           this.logout();
         } finally {
           this.initialized = true;
+          this.pageLoading = false; // Tắt loading sau khi xong
         }
+      } else {
+        // Nếu không cần khởi tạo, vẫn phải cập nhật trạng thái
+        this.initialized = true;
+        this.pageLoading = false;
       }
     },
 
@@ -156,8 +167,7 @@ export const useAuthStore = defineStore("auth", {
           if (response.success) {
             this.parent_id = response.data.id;
           }
-        }
-        else if (role == "tutor") {
+        } else if (role == "tutor") {
           // Lấy tutor_id từ userId
           const response = await TutorService.getByUserId(userId);
           if (response.success) {
