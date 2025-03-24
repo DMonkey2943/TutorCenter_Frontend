@@ -91,7 +91,7 @@
               Hủy đăng ký
             </button>
             <button
-              v-else-if="classItem.approvals?.[0]?.status == 1"
+              v-else-if="classItem.approvals?.[0]?.status == 1 || classItem.approvals?.[0]?.status == 2"
               type="submit"
               class="btn btn-success"
               @click="confirmClassTeaching(classItem.id)"
@@ -113,6 +113,14 @@
             >
               Đăng ký nhận lớp
             </button>
+
+            <div
+              v-if="classItem.approvals?.[0]?.status == 2"
+              class="alert alert-info text-center p-2 mt-2"
+              role="alert"
+            >
+              Phụ huynh muốn bạn dạy cho lớp học
+            </div>
           </div>
           <div
             v-if="
