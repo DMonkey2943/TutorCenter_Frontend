@@ -20,6 +20,10 @@ class ReportService {
   async show(id) {
     return (await this.api.get(`/${id}`)).data;
   }
+
+  async getTutorReportsForClass(classId) {
+    return (await this.api.get(`/classes/${classId}`)).data;
+  }
 }
 
 export default new ReportService();

@@ -216,9 +216,30 @@
             </p>
             <p><strong>Giới tính GS:</strong> {{ formattedGender }}</p>
             <p><strong>Yêu cầu khác:</strong> {{ classDetail.request }}</p>
+
+            <h5>Thông tin báo cáo vấn đề</h5>
+            <p v-if="!tutorReports || tutorReports.length == 0">Không có</p>
+            <div v-else>
+              <div v-for="report in tutorReports" :key="report.id" class="mb-3">
+                <p
+                  class="fw-bold mb-1"
+                  :class="report.status === 1 ? 'text-success' : 'text-warning'"
+                >
+                  Báo cáo #{{ report.id }} -
+                  {{ report.status == 1 ? "Đã xử lý" : "Chưa xử lý" }}
+                </p>
+                <p class="mb-1">
+                  <strong>Nội dung:</strong> {{ report.content }}
+                </p>
+                <p v-if="report.response" class="ms-2">
+                  <i class="fas fa-reply me-1"></i>
+                  <strong>Phản hồi:</strong> {{ report.response }}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="modal-footer" v-if="classDetail.status==1">
+        <div class="modal-footer" v-if="classDetail.status == 1">
           <button
             type="button"
             class="btn btn-warning"
@@ -308,7 +329,6 @@ import { Modal } from "ant-design-vue";
 import ClassService from "@/services/class.service";
 import RateService from "@/services/rate.service";
 import ReportService from "@/services/report.service";
-
 const authStore = useAuthStore();
 
 // Nhận prop classes từ component cha
@@ -413,9 +433,8 @@ const getClassDetail = async (classId) => {
   loading.value = true;
   try {
     const result = await ClassService.show(classId);
-    console.log(result);
     const dataClass = result.data;
-    console.log(dataClass);
+    // console.log(dataClass);
 
     classDetail.id = classId;
     classDetail.parent = dataClass.parent?.user ?? "";
@@ -441,10 +460,13 @@ const getClassDetail = async (classId) => {
     classDetail.request = dataClass.request ?? "";
     classDetail.status = dataClass.status ?? "";
 
+    if (classDetail.status == 1 || classDetail.status == 2) {
+      getTutorReportsForClass(classId);
+    }
     if (classDetail.status == 2) {
       fetchTutorRating();
     }
-    console.log(classDetail);
+    // console.log(classDetail);
   } catch (error) {
     console.error("Lỗi khi lấy chi tiết lớp:", error);
   } finally {
@@ -489,7 +511,7 @@ const fetchTutorRating = async () => {
   try {
     const response = await RateService.show(classDetail.id);
 
-    console.log(response);
+    // console.log(response);
 
     if (response.success) {
       tutorRating.value = response.data ?? null;
@@ -503,44 +525,57 @@ const fetchTutorRating = async () => {
 const reportForm = ref({
   tutor_id: null,
   class_id: null,
-  content: '',
-  loading: false
-})
+  content: "",
+  loading: false,
+});
 
 // Reset form khi đóng modal
 const resetReportForm = () => {
   reportForm.value = {
-    content: '',
-    loading: false
-  }
-}
+    content: "",
+    loading: false,
+  };
+};
 
 // Xử lý gửi báo cáo
 const submitReport = async () => {
   if (!reportForm.value.content) {
-    message.error('Vui lòng điền nội dung')
-    return
+    message.error("Vui lòng điền nội dung");
+    return;
   }
 
   try {
-    reportForm.value.loading = true
+    reportForm.value.loading = true;
     reportForm.value.tutor_id = classDetail.tutor_id;
     reportForm.value.class_id = classDetail.id;
 
-    console.log(reportForm.value);
-    
+    // console.log(reportForm.value);
+
     const response = await ReportService.store(reportForm.value);
 
     if (response.success) {
-      message.success('Báo cáo đã được gửi thành công')
-      bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide()
-      resetReportForm()      
+      message.success("Báo cáo đã được gửi thành công");
+      bootstrap.Modal.getInstance(
+        document.getElementById("reportModal")
+      ).hide();
+      resetReportForm();
     }
   } catch (error) {
-    message.error('Không thể gửi báo cáo: ' + error.message)
+    message.error("Không thể gửi báo cáo: " + error.message);
   } finally {
-    reportForm.value.loading = false
+    reportForm.value.loading = false;
   }
-}
+};
 
+const tutorReports = ref([]);
+const getTutorReportsForClass = async (classId) => {
+  try {
+    const result = await ReportService.getTutorReportsForClass(classId);
+    console.log(result);
+    tutorReports.value = result.data;
+    console.log(tutorReports.value);
+  } catch (error) {
+    message.error("Không thể gửi báo cáo: " + error.message);
+  }
+};
 </script>
