@@ -300,7 +300,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, reactive, ref, computed } from "vue";
+import { reactive, ref, computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import ApprovalService from "@/services/approval.service";
 import message from "ant-design-vue/es/message";
