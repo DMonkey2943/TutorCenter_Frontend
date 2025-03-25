@@ -1,7 +1,17 @@
 import createApiClient from "./api.service";
 
 class AuthService {
+  // constructor(baseUrl = "/api") {
+  //   this.api = createApiClient(baseUrl);
+  // }
+
+  api = null;
   constructor(baseUrl = "/api") {
+    // Khởi tạo api trong một hàm riêng
+    this.initApi(baseUrl);
+  }
+
+  initApi(baseUrl) {
     this.api = createApiClient(baseUrl);
   }
 
