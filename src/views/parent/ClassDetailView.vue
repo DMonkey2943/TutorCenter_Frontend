@@ -184,6 +184,17 @@
               Kết thúc lớp học
             </a-button>
 
+            <a-button v-if="showEditButton" class="me-sm-2 mb-2" type="primary">
+              <router-link
+                :to="{
+                  name: 'parent.classes.edit',
+                  params: { id: classId },
+                }"
+              >
+                <span>Chỉnh sửa lớp học</span>
+              </router-link>
+            </a-button>
+
             <a-button class="me-sm-2 mb-2">
               <router-link :to="{ name: 'parent.classes' }">
                 <span>Trở về</span>
@@ -263,10 +274,10 @@ const class2 = reactive({
 });
 
 const status = ref(0);
-
+const classId = route.params.id;
 const getClass = async () => {
   try {
-    const id = route.params.id;
+    const id = classId;
 
     const result = await ClassService.show(id);
 
@@ -456,18 +467,24 @@ const tutorRating = ref(null);
 // Hàm để lấy đánh giá của gia sư
 const fetchTutorRating = async () => {
   // if(class2.status)
-  try {    
+  try {
     const response = await RateService.show(class2.id);
-    
+
     console.log(response);
 
     if (response.success) {
       tutorRating.value = response.data ?? null;
     }
   } catch (error) {
-    console.error('Không thể tải đánh giá gia sư:', error);
+    console.error("Không thể tải đánh giá gia sư:", error);
   }
 };
+
+const showEditButton = computed(() => {
+  // Kiểm tra đủ điều kiện: đã giao, đã bắt đầu, và chưa kết thúc
+  const today = new Date().toISOString().split("T")[0];
+  return class2.status == 0;
+});
 
 onMounted(() => {
   getClass();

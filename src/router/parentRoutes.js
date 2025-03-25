@@ -23,6 +23,11 @@ export default [
         name: "parent.classes.detail",
         component: () => import("../views/parent/ClassDetailView.vue"),
       },
+      {
+        path: "classes/:id/edit",
+        name: "parent.classes.edit",
+        component: () => import("../views/parent/EditClassView.vue"),
+      },
     ],
   },
 ];
