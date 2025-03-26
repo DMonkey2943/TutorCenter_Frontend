@@ -1,20 +1,4 @@
 <template>
-  <!-- Spinner Start -->
-  <!-- <div
-    id="spinner"
-    class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
-  >
-    <div
-      class="spinner-border text-primary"
-      style="width: 3rem; height: 3rem"
-      role="status"
-    >
-      <span class="sr-only">Loading...</span>
-    </div>
-  </div> -->
-  <!-- Spinner End -->
-
-  <!-- Classes Start -->
   <div class="container-xxl py-5">
     <div class="container">
       <div
@@ -29,14 +13,20 @@
           biệt của từng học viên.
         </p>
       </div>
+      <div
+        v-if="classes.data.length === 0 && !loading"
+        class="text-center alert alert-info"
+      >
+        Bạn chưa đăng ký lớp học.
+      </div>
       <TheClassList
+        v-if="classes.data.length > 0 && !loading"
         :classes="classes"
         @pageChange="handlePageChange"
         @retrieveClasses="getRegisterdClasses"
       ></TheClassList>
     </div>
   </div>
-  <!-- Classes End -->
 </template>
 
 <script setup>
@@ -53,14 +43,20 @@ const classes = ref({
   per_page: 6, // Số bản ghi trên mỗi trang (theo backend của bạn)
 });
 
+// Loading state
+const loading = ref(false);
+
 // Hàm gọi API, truyền tham số page
 const getRegisterdClasses = async (page = 1) => {
+  loading.value = true; // Bật loading
   try {
     const response = await ClassService.getRegisteredClasses(page);
     classes.value = response;
     console.log(classes.value);
   } catch (error) {
     console.log(error);
+  } finally {
+    loading.value = false; // Tắt loading
   }
 };
 

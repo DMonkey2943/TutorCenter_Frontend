@@ -28,7 +28,14 @@
           mỗi ngày.
         </p>
       </div>
+      <div
+        v-if="classes.data.length === 0 && !loading"
+        class="text-center alert alert-info"
+      >
+        Bạn chưa đăng ký nhận dạy lớp học.
+      </div>
       <TheClassList
+        v-if="classes.data.length > 0 && !loading"
         :classes="classes"
         @pageChange="handlePageChange"
         @retrieveClasses="getEnrolledClasses"
@@ -52,14 +59,20 @@ const classes = ref({
   per_page: 6, // Số bản ghi trên mỗi trang (theo backend của bạn)
 });
 
+// Loading state
+const loading = ref(false);
+
 // Hàm gọi API, truyền tham số page
 const getEnrolledClasses = async (page = 1) => {
+  loading.value = true; // Bật loading
   try {
     const response = await ClassService.getEnrolledClasses(page);
     classes.value = response;
     console.log(classes.value);
   } catch (error) {
     console.log(error);
+  } finally {
+    loading.value = false; // Tắt loading
   }
 };
 
