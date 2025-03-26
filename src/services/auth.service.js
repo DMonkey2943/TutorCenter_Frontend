@@ -36,4 +36,7 @@ class AuthService {
   }
 }
 
-export default new AuthService();
+// Export factory function thay vì instance trực tiếp
+export default function createAuthService(baseUrl = "/api") {
+  return new AuthService(baseUrl);
+}

@@ -153,7 +153,10 @@ import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 import message from "ant-design-vue/es/message";
 import { useAuthStore } from "@/stores/auth";
-import AuthService from "@/services/auth.service";
+// import AuthService from "@/services/auth.service";
+
+import createAuthService from "@/services/auth.service";
+const AuthService = createAuthService("/api");
 
 const authStore = useAuthStore();
 

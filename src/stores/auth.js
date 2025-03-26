@@ -1,7 +1,10 @@
 import { defineStore } from "pinia";
-import AuthService from "@/services/auth.service";
+// import AuthService from "@/services/auth.service";
 import ParentService from "@/services/parent.service";
 import TutorService from "@/services/tutor.service";
+
+import createAuthService from "@/services/auth.service";
+const AuthService = createAuthService("/api");
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
