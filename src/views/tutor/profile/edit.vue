@@ -587,6 +587,7 @@ const updateTutorProfile = async () => {
     const result = await TutorService.update(id, formData);
 
     if (result.success) {
+      authStore.getIdByUserId();
       message.success(
         "Cập nhật hồ sơ thành công! Khi hồ sơ được duyệt, gia sư mới có thể đăng ký nhận lớp mới"
       );

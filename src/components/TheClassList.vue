@@ -370,13 +370,34 @@ const formattedLevelGender = (classItem) => {
 
 const enrollClass = async (classId) => {
   try {
-    const result = await ApprovalService.enrollClass({ class_id: classId });
-    // console.log(result);
-    if (result.success) {
-      message.success(`Đăng ký nhận lớp học MS:${classId} thành công`);
+    if (authStore.tutor_profile_status == null) {
+      message.error("Hãy cập nhật hồ sơ của bạn để có thể đăng ký nhận lớp nhé!");
+    } else if (authStore.tutor_profile_status == -1) {
+      message.error("Hồ sơ của bạn bị từ chối. Hãy cập nhật lại chính xác hồ sơ của bạn để có thể đăng ký nhận lớp nhé!");
+    } else if (authStore.tutor_profile_status == 0) {
+      message.error("Hồ sơ của bạn đang chờ được duyệt. Vui lòng đợi trung tâm xét duyệt hồ sơ để có thể đăng ký nhận lớp nhé!");
+    } else {
+      const result = await ApprovalService.enrollClass({ class_id: classId });
+      // console.log(result);
+      if (result.success) {
+        message.success(`Đăng ký nhận lớp học MS:${classId} thành công`);
+      }
     }
   } catch (error) {
     console.log(error);
+    if (error.response) {
+      const status = error.response.status;
+      const errorMessage = error.response.data.message || "Có lỗi xảy ra";
+
+      if (status === 404) {
+        message.error(errorMessage);
+      } else {
+        message.error(errorMessage);
+      }
+    } else {
+      console.log(error);
+      message.error("Lỗi kết nối hoặc không thể xử lý yêu cầu");
+    }
   }
 };
 

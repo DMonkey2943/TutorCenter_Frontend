@@ -8,6 +8,7 @@ export const useAuthStore = defineStore("auth", {
     user: {},
     parent_id: null,
     tutor_id: null,
+    tutor_profile_status: null,
     token: localStorage.getItem("token"),
     loading: false,
     error: null,
@@ -172,6 +173,7 @@ export const useAuthStore = defineStore("auth", {
           const response = await TutorService.getByUserId(userId);
           if (response.success) {
             this.tutor_id = response.data.id;
+            this.tutor_profile_status = response.data.profile_status;
           }
         }
       } catch (error) {
