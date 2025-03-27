@@ -10,7 +10,7 @@ class TutorService {
   }
 
   async averageRating(id) {
-    return (await this.api.get(`/${id}/averageRating`)).data;
+    return (await this.api.get(`/${id}/rating`)).data;
   }
 
   async getAvailableTutors(request) {

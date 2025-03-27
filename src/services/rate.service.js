@@ -6,11 +6,11 @@ class RateService {
   }
 
   async store(request) {
-    return (await this.api.post("/", request)).data;
+    return (await this.api.post("/classes/", request)).data;
   }
 
   async show(classId) {
-    return (await this.api.get(`/${classId}`)).data;
+    return (await this.api.get(`/classes/${classId}`)).data;
   }
 }
 

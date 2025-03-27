@@ -1,12 +1,12 @@
 import createApiClient from "./api.service";
 
 class WardService {
-  constructor(baseUrl = "/api/wards") {
+  constructor(baseUrl = "/api/districts") {
     this.api = createApiClient(baseUrl);
   }
 
-  async getAllBelongToDistrict(id) {
-    return (await this.api.get(`/getAllBelongToDistrict/${id}`)).data;
+  async getAllBelongToDistrict(districtId) {
+    return (await this.api.get(`/${districtId}/wards`)).data;
   }
 }
 

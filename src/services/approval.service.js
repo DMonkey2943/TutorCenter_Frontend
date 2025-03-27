@@ -5,16 +5,23 @@ class ApprovalService {
     this.api = createApiClient(baseUrl);
   }
 
-  async enrollClass(request) { //store
-    return (await this.api.post("/enroll", request)).data;
+  async enrollClass(request) {
+    //store
+    return (await this.api.post("/classes/", request)).data;
   }
 
-  async unenrollClass(classId) { //destroy
-    return (await this.api.delete(`/unenroll/${classId}`)).data;
+  async unenrollClass(classId) {
+    //destroy
+    return (await this.api.delete(`/classes/${classId}`)).data;
   }
 
-  async approve(classId, request) { //update
-    return (await this.api.patch(`/${classId}`, request)).data;
+  async approve(classId, request) {
+    //update
+    return (await this.api.patch(`/classes/${classId}`, request)).data;
+  }
+
+  async index(classId) {
+    return (await this.api.get(`/classes/${classId}`)).data;
   }
 }
 

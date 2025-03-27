@@ -6,29 +6,27 @@ class ClassService {
   }
 
   async getAllNewClasses(page = 1) {
-    return (await this.api.get("/getAllNewClasses", { params: { page } })).data;
+    return (await this.api.get("/new", { params: { page } })).data;
   }
 
   async recommendClasses(page = 1) {
-    return (await this.api.get("/recommendClasses", { params: { page } })).data;
+    return (await this.api.get("/recommended", { params: { page } })).data;
   }
 
   async getEnrolledClasses(page = 1) {
-    return (await this.api.get("/getEnrolledClasses", { params: { page } }))
-      .data;
+    return (await this.api.get("/enrolled", { params: { page } })).data;
   }
 
   async getRegisteredClasses(page = 1) {
-    return (await this.api.get("/getRegisteredClasses", { params: { page } }))
-      .data;
+    return (await this.api.get("/registered", { params: { page } })).data;
   }
 
   async confirmClassTeaching(classId) {
-    return (await this.api.patch(`/confirmClassTeaching/${classId}`)).data;
+    return (await this.api.patch(`/${classId}/confirm`)).data;
   }
 
   async completeClass(classId) {
-    return (await this.api.patch(`/completeClass/${classId}`)).data;
+    return (await this.api.patch(`/${classId}/complete`)).data;
   }
 
   async index() {
@@ -52,7 +50,7 @@ class ClassService {
   }
 
   async get12Classes() {
-    return (await this.api.get("/get12Classes")).data;
+    return (await this.api.get("/latest")).data;
   }
 }
 

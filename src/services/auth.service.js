@@ -24,11 +24,11 @@ class AuthService {
   }
 
   async logout() {
-    return (await this.api.get("/logout")).data;
+    return (await this.api.post("/logout")).data;
   }
 
   async changePassword(request) {
-    return (await this.api.post("/account/changePassword", request)).data;
+    return (await this.api.post("/account/password", request)).data;
   }
 
   async getAccount() {
