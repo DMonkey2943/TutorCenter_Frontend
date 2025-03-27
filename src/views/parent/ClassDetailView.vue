@@ -275,6 +275,17 @@ const class2 = reactive({
 
 const status = ref(0);
 const classId = route.params.id;
+
+const getApproval = async () => {
+  try {
+    const result = await ApprovalService.index(classId);
+
+    class2.approvals = result.data ?? [];
+    console.log(class2.approvals);
+  } catch (error) {
+    console.log(error);
+  }
+};
 const getClass = async () => {
   try {
     const id = classId;
@@ -320,11 +331,15 @@ const getClass = async () => {
     class2.level = dataClass.level?.name ?? "";
     class2.request = dataClass.request ?? "";
     class2.status = dataClass.status ?? "";
-    class2.approvals = dataClass.approvals ?? [];
+    // class2.approvals = dataClass.approvals ?? [];
 
     console.log(class2);
 
-    fetchTutorRating();
+    if (class2.status == 0) {
+      getApproval();
+    } else if (class2.status == 2) {
+      fetchTutorRating();
+    }
   } catch (error) {
     console.log(error);
     router.push({
