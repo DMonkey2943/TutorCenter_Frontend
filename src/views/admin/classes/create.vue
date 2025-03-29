@@ -189,6 +189,99 @@
             </small>
           </div>
         </div>
+        <!-- Search tutors to choose for class -->
+        <div class="row mb-3">
+          <a-form-item>
+            <a-button type="primary" @click="searchTutors" :loading="loading"
+              >Tìm gia sư phù hợp</a-button
+            >
+          </a-form-item>
+          <hr />
+          <!-- Danh sách gia sư -->
+          <div v-if="tutors.length > 0" class="tutor-list mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4>Gia sư phù hợp ({{ tutors.length }})</h4>
+              <span class="text-muted"
+                >Đã chọn: {{ class1.tutors.length }}</span
+              >
+            </div>
+
+            <a-checkbox-group v-model:value="class1.tutors" class="w-100">
+              <div class="row">
+                <div
+                  class="col-12 mb-3"
+                  v-for="tutor in tutors"
+                  :key="tutor.id"
+                >
+                  <a-card hoverable class="tutor-card position-relative">
+                    <a-checkbox
+                      :value="tutor.id"
+                      class="tutor-select position-absolute"
+                      style="top: 10px; right: 10px"
+                    ></a-checkbox>
+                    <div class="d-flex">
+                      <div class="tutor-avatar me-3">
+                        <!-- Display avatar if available, otherwise show initials -->
+                        <img
+                          v-if="tutor.avatar"
+                          :src="getAvatarUrl(tutor.avatar)"
+                          class="rounded-circle"
+                          style="width: 50px; height: 50px; object-fit: cover"
+                          :alt="tutor.user.name"
+                        />
+                        <div
+                          v-else
+                          class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center"
+                          style="width: 50px; height: 50px; font-size: 18px"
+                        >
+                          {{ tutor.user.name.charAt(0) }}
+                        </div>
+                      </div>
+                      <div class="tutor-info w-100">
+                        <a-popover
+                          :title="tutor.user.name"
+                          trigger="hover"
+                          placement="top"
+                        >
+                          <template #content>
+                            <p>
+                              <strong>Trình độ:</strong>
+                              {{ tutor.level.name }}
+                            </p>
+                            <p>
+                              <strong>Chuyên ngành:</strong>
+                              {{ tutor.major }} - {{ tutor.school }}
+                            </p>
+                            <p>
+                              <strong>Môn dạy:</strong>
+                              {{ tutor.subjects.map((s) => s.name).join(", ") }}
+                            </p>
+                            <p>
+                              <strong>Khối lớp dạy:</strong>
+                              {{ tutor.grades.map((s) => s.name).join(", ") }}
+                            </p>
+                            <p>
+                              <strong>Mức lương/buổi:</strong>
+                              {{ tutor.tuition.range }}
+                            </p>
+                          </template>
+                          <div>
+                            <h6 class="mb-1">{{ tutor.user.name }}</h6>
+                            <p class="text-muted mb-1">MS: {{ tutor.id }}</p>
+                          </div>
+                        </a-popover>
+                      </div>
+                    </div>
+                  </a-card>
+                </div>
+              </div>
+            </a-checkbox-group>
+          </div>
+
+          <div v-else-if="searched" class="alert alert-info mt-3">
+            Không tìm thấy gia sư phù hợp với tiêu chí của bạn.
+          </div>
+        </div>
       </div>
       <div class="col-12 col-lg-7">
         <!-- Subjects -->
@@ -315,6 +408,7 @@ import GradesService from "@/services/grade.service";
 import LevelService from "@/services/level.service";
 import message from "ant-design-vue/es/message";
 import ParentService from "@/services/parent.service";
+import TutorService from "@/services/tutor.service";
 import WardService from "@/services/ward.service";
 
 useMenuAdmin().onSelectedKeys(["admin-classes"]);
@@ -464,6 +558,52 @@ watch(
 const disabledStartDate = (current) => {
   // Không cho chọn các ngày trước 2 ngày kể từ hôm nay
   return current && current.isBefore(dayjs().add(2, "day").startOf("day"));
+};
+
+// Tìm kiếm gia sư để chọn gia sư cho lớp học
+const tutors = ref([]);
+const loading = ref(false);
+const searched = ref(false);
+const searchTutors = async () => {
+  loading.value = true;
+  class1.tutors = []; // Reset selected tutors when searching again
+
+  try {
+    const searchData = {
+      district_id: class1.district_id,
+      subjects: class1.subjects,
+      grade_id: class1.grade_id,
+      level_id: class1.level_id,
+      gender: class1.gender,
+    };
+    console.log(searchData);
+
+    const response = await TutorService.getAvailableTutors(searchData);
+    console.log(response);
+
+    tutors.value = response.data;
+    console.log(tutors.value);
+    searched.value = true;
+  } catch (error) {
+    console.error("Lỗi khi tìm kiếm gia sư:", error);
+    message.error("Không thể tìm kiếm gia sư, vui lòng thử lại sau");
+  } finally {
+    loading.value = false;
+  }
+};
+
+const baseStorageUrl = "http://127.0.0.1:8000/storage/";
+// Function to generate full avatar URL
+const getAvatarUrl = (avatarPath) => {
+  if (!avatarPath) return null;
+
+  // If the avatar path already includes the base URL, return it as is
+  if (avatarPath.startsWith("http")) {
+    return avatarPath;
+  }
+
+  // Otherwise, prepend the storage URL
+  return `${baseStorageUrl}${avatarPath}`;
 };
 
 onMounted(() => {
