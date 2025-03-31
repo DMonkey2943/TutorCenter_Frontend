@@ -22,6 +22,7 @@
               Tất cả lớp học
             </button>
             <button
+            v-if="authStore.user.role == 'tutor'"
               class="btn"
               @click="showRecommendedClasses"
               :class="
