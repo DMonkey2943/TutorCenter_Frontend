@@ -133,7 +133,12 @@
             </template>
             <template #footer>
               <div class="text-end">
-                <router-link :to="{ name: 'admin.tutors.profile', query: { status: 'pending' }  }">
+                <router-link
+                  :to="{
+                    name: 'admin.tutors.profile',
+                    query: { status: 'pending' },
+                  }"
+                >
                   Xem tất cả <ArrowRightOutlined />
                 </router-link>
               </div>
@@ -148,20 +153,21 @@
           <a-list size="small" bordered>
             <a-list-item>
               <CheckOutlined /> Duyệt {{ stats.pendingTutors }} hồ sơ gia sư
-              <router-link :to="{ name: 'admin.tutors.profile' }" class="ms-2"
+              <router-link
+                :to="{
+                  name: 'admin.tutors.profile',
+                  query: { status: 'pending' },
+                }"
+                class="ms-2"
                 >Xem</router-link
               >
             </a-list-item>
-            <!-- <a-list-item>
-              <CheckOutlined /> Duyệt {{ stats.pendingClasses }} lớp học mới
-              <router-link to="/admin/classes?status=pending" class="ms-2"
-                >Xem</router-link
-              >
-            </a-list-item> -->
             <a-list-item>
               <CheckOutlined /> Xử lý {{ stats.pendingReports }} báo cáo lớp học
               của gia sư
-              <router-link :to="{ name: 'admin.reports' }" class="ms-2"
+              <router-link
+                :to="{ name: 'admin.reports', query: { status: 'pending' } }"
+                class="ms-2"
                 >Xem</router-link
               >
             </a-list-item>

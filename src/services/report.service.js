@@ -5,8 +5,23 @@ class ReportService {
     this.api = createApiClient(baseUrl);
   }
 
-  async index() {
-    return (await this.api.get("/")).data;
+  // Map các status text sang số
+  statusMap = {
+    pending: 0,
+    ok: 1,
+  };
+
+  async index(statusText = null) {
+    let url = "/";
+    if (statusText !== null) {
+      // Chuyển đổi từ text sang số nếu có trong map
+      const statusNumber = this.statusMap[statusText];
+      if (statusNumber !== undefined) {
+        url = `/?status=${statusNumber}`;
+      }
+      // Nếu statusText không có trong map, chỉ gửi request không có status
+    }
+    return (await this.api.get(url)).data;
   }
 
   async store(request) {

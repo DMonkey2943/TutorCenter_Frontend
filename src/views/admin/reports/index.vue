@@ -1,8 +1,32 @@
 <template>
   <a-card title="QUẢN LÝ BÁO CÁO LỚP HỌC CỦA GIA SƯ" style="width: 100%">
+    <div class="row mb-3">
+      <div class="col-12 d-flex justify-content-between align-items-center">
+        <!-- Thêm filter trạng thái ở đây -->
+        <div>
+          <span class="me-2 fw-semibold">Trạng thái:</span>
+          <a-select
+            v-model:value="selectedStatus"
+            style="width: 150px"
+            @change="handleStatusChange"
+            placeholder="Tất cả"
+          >
+            <a-select-option :value="null">Tất cả</a-select-option>
+            <a-select-option value="pending">Chờ xử lý</a-select-option>
+            <a-select-option value="ok">Đã xử lý</a-select-option>
+          </a-select>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-12">
-        <a-table :dataSource="reports" :columns="columns" :scroll="{ x: 576 }">
+        <a-table
+          :dataSource="reports"
+          :columns="columns"
+          :scroll="{ x: 576 }"
+          :loading="loadingReports"
+        >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'subjects'">
               <span>{{ record.subjects.map((s) => s.name).join(", ") }}</span>
@@ -11,7 +35,7 @@
               <span
                 v-if="record.status == 0"
                 class="px-2 py-1 rounded badge text-bg-warning"
-                >Chưa xử lý</span
+                >Chờ xử lý</span
               >
               <span
                 v-else-if="record.status == 1"
@@ -123,17 +147,37 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
 import ReportService from "@/services/report.service";
 import { Modal } from "ant-design-vue";
 import message from "ant-design-vue/es/message";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 useMenuAdmin().onSelectedKeys(["admin-reports"]);
 
+const route = useRoute();
+const router = useRouter();
+
 const reports = ref([]);
 const open = ref(false);
+const selectedStatus = ref(null);
+const loadingReports = ref(false);
+
+// Danh sách các status text hợp lệ
+const validStatusValues = ["pending", "ok"];
+
+// Map giữa status text và giá trị hiển thị
+const statusLabels = {
+  pending: "Chờ xử lý",
+  ok: "Đã xử lý",
+};
+
+// Map giữa status số và status text (ngược lại với map trong ClassService)
+const statusTextMap = {
+  0: "pending",
+  1: "ok",
+};
 
 const columns = [
   {
@@ -182,13 +226,30 @@ const columns = [
   },
 ];
 
-const getAllReports = async () => {
+const getAllReports = async (statusText = null) => {
+  loadingReports.value = true;
   try {
-    const response = await ReportService.index();
+    const response = await ReportService.index(statusText);
     reports.value = response.data;
   } catch (error) {
     console.log(error);
+    message.error("Có lỗi xảy ra khi tải danh sách báo cáo lớp học");
+  } finally {
+    loadingReports.value = false;
   }
+};
+
+const handleStatusChange = (value) => {
+  selectedStatus.value = value;
+
+  // Cập nhật URL với status text
+  if (value === null) {
+    router.replace({ query: {} });
+  } else {
+    router.replace({ query: { status: value } });
+  }
+
+  getAllReports(value);
 };
 
 // State for modal
@@ -197,7 +258,6 @@ const confirmLoading = ref(false);
 const selectedReportId = ref(null);
 const reportDetail = ref(null);
 const loading = ref(false);
-const router = useRouter();
 
 // Function to handle showing the modal and fetching report details
 const showReportModal = async (id) => {
@@ -224,6 +284,7 @@ const errors = ref({});
 // Modal handlers
 const handleModalOk = async () => {
   // alert(selectedReportId.value);
+  const statusText = route.query.status;
   try {
     confirmLoading.value = true;
     const result = await ReportService.update(selectedReportId.value, {
@@ -235,7 +296,7 @@ const handleModalOk = async () => {
       modalVisible.value = false;
     }
     errors.value = {};
-    getAllReports();
+    getAllReports(statusText);
   } catch (error) {
     console.log(error);
     errors.value = error.response.data.errors;
@@ -248,11 +309,54 @@ const handleModalCancel = () => {
   modalVisible.value = false;
 };
 
-const handleReport = async (id) => {
-  alert(id);
-};
-
 onMounted(() => {
-  getAllReports();
+  // Kiểm tra nếu có status trong URL
+  if (route.query.status !== undefined) {
+    const statusText = route.query.status;
+
+    // Kiểm tra xem giá trị status có hợp lệ không
+    if (validStatusValues.includes(statusText)) {
+      selectedStatus.value = statusText;
+      getAllReports(statusText);
+    } else {
+      // Xử lý khi giá trị không hợp lệ:
+      // 1. Đặt dropdown về "Tất cả"
+      selectedStatus.value = null;
+      // 2. Xóa query param không hợp lệ
+      router.replace({ query: {} });
+      // 3. Tải tất cả dữ liệu
+      getAllReports();
+      // 4. Thông báo cho người dùng (tùy chọn)
+      message.warning("Bộ lọc trạng thái không hợp lệ đã được đặt lại");
+    }
+  } else {
+    getAllReports();
+  }
 });
+
+// Theo dõi thay đổi route để cập nhật lại danh sách
+watch(
+  () => route.query.status,
+  (newStatus) => {
+    if (newStatus !== undefined) {
+      if (
+        validStatusValues.includes(newStatus) &&
+        selectedStatus.value !== newStatus
+      ) {
+        // Nếu giá trị mới hợp lệ và khác với giá trị hiện tại
+        selectedStatus.value = newStatus;
+        getAllReports(newStatus);
+      } else if (!validStatusValues.includes(newStatus)) {
+        // Nếu giá trị mới không hợp lệ, đặt lại về null và xóa query
+        selectedStatus.value = null;
+        router.replace({ query: {} });
+        getAllReports();
+        message.warning("Bộ lọc trạng thái không hợp lệ đã được đặt lại");
+      }
+    } else if (newStatus === undefined && selectedStatus.value !== null) {
+      selectedStatus.value = null;
+      getAllReports(null);
+    }
+  }
+);
 </script>
