@@ -133,7 +133,7 @@
             </template>
             <template #footer>
               <div class="text-end">
-                <router-link :to="{ name: 'admin.tutors.profile' }">
+                <router-link :to="{ name: 'admin.tutors.profile', query: { status: 'pending' }  }">
                   Xem tất cả <ArrowRightOutlined />
                 </router-link>
               </div>

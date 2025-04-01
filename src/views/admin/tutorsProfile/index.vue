@@ -1,8 +1,34 @@
 <template>
   <a-card title="QUẢN LÝ HỒ SƠ GIA SƯ" style="width: 100%">
+    <div class="row mb-3">
+      <div class="col-12 d-flex justify-content-between align-items-center">
+        <!-- Thêm filter trạng thái ở đây -->
+        <div>
+          <span class="me-2 fw-semibold">Trạng thái:</span>
+          <a-select
+            v-model:value="selectedStatus"
+            style="width: 150px"
+            @change="handleStatusChange"
+            placeholder="Tất cả"
+          >
+            <a-select-option :value="null">Tất cả</a-select-option>
+            <a-select-option value="not_created">Chưa tạo</a-select-option>
+            <a-select-option value="failed">Không đạt</a-select-option>
+            <a-select-option value="pending">Chờ duyệt</a-select-option>
+            <a-select-option value="ok">Đã duyệt</a-select-option>
+          </a-select>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-12">
-        <a-table :dataSource="tutors" :columns="columns" :scroll="{ x: 576 }">
+        <a-table
+          :dataSource="tutors"
+          :columns="columns"
+          :scroll="{ x: 576 }"
+          :loading="loading"
+        >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'subjects'">
               <span>{{ record.subjects.map((s) => s.name).join(", ") }}</span>
@@ -63,17 +89,42 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
 import TutorService from "@/services/tutor.service";
 import { Modal } from "ant-design-vue";
 import message from "ant-design-vue/es/message";
+import { useRoute, useRouter } from "vue-router";
 
 useMenuAdmin().onSelectedKeys(["admin-tutors-profile"]);
+
+const route = useRoute();
+const router = useRouter();
 
 const tutors = ref([]);
 const tutorProfile = ref({});
 const open = ref(false);
+const selectedStatus = ref(null);
+const loading = ref(false);
+
+// Danh sách các status text hợp lệ
+const validStatusValues = ["pending", "failed", "ok", "not_created"];
+
+// Map giữa status text và giá trị hiển thị
+const statusLabels = {
+  not_created: "Chưa tạo",
+  failed: "Không đạt",
+  pending: "Chờ duyệt",
+  ok: "Đã duyệt",
+};
+
+// Map giữa status số và status text (ngược lại với map trong ClassService)
+const statusTextMap = {
+  "": "not_created",
+  "-1": "failed",
+  0: "pending",
+  1: "ok",
+};
 
 const columns = [
   {
@@ -122,28 +173,80 @@ const columns = [
   },
 ];
 
-const getAllTutors = async () => {
+const getAllTutors = async (statusText = null) => {
+  loading.value = true;
   try {
-    const response = await TutorService.index();
+    const response = await TutorService.index(statusText);
     tutors.value = response.data;
   } catch (error) {
     console.log(error);
+    message.error("Có lỗi xảy ra khi tải danh sách hồ sơ gia sư");
+  } finally {
+    loading.value = false;
   }
 };
 
-const getTutorProfile = async (id) => {
-  try {
-    const result = await TutorService.show(id);
-    tutorProfile.value = result.data;
-    open.value = true;
-    // console.log(result);
-    console.log(tutorProfile.value);
-  } catch (error) {
-    console.log(error);
+const handleStatusChange = (value) => {
+  selectedStatus.value = value;
+
+  // Cập nhật URL với status text
+  if (value === null) {
+    router.replace({ query: {} });
+  } else {
+    router.replace({ query: { status: value } });
   }
+
+  getAllTutors(value);
 };
 
-// onMounted(() => {
-getAllTutors();
-// });
+onMounted(() => {
+  // Kiểm tra nếu có status trong URL
+  if (route.query.status !== undefined) {
+    const statusText = route.query.status;
+
+    // Kiểm tra xem giá trị status có hợp lệ không
+    if (validStatusValues.includes(statusText)) {
+      selectedStatus.value = statusText;
+      getAllTutors(statusText);
+    } else {
+      // Xử lý khi giá trị không hợp lệ:
+      // 1. Đặt dropdown về "Tất cả"
+      selectedStatus.value = null;
+      // 2. Xóa query param không hợp lệ
+      router.replace({ query: {} });
+      // 3. Tải tất cả dữ liệu
+      getAllTutors();
+      // 4. Thông báo cho người dùng (tùy chọn)
+      message.warning("Bộ lọc trạng thái không hợp lệ đã được đặt lại");
+    }
+  } else {
+    getAllTutors();
+  }
+});
+
+// Theo dõi thay đổi route để cập nhật lại danh sách
+watch(
+  () => route.query.status,
+  (newStatus) => {
+    if (newStatus !== undefined) {
+      if (
+        validStatusValues.includes(newStatus) &&
+        selectedStatus.value !== newStatus
+      ) {
+        // Nếu giá trị mới hợp lệ và khác với giá trị hiện tại
+        selectedStatus.value = newStatus;
+        getAllTutors(newStatus);
+      } else if (!validStatusValues.includes(newStatus)) {
+        // Nếu giá trị mới không hợp lệ, đặt lại về null và xóa query
+        selectedStatus.value = null;
+        router.replace({ query: {} });
+        getAllTutors();
+        message.warning("Bộ lọc trạng thái không hợp lệ đã được đặt lại");
+      }
+    } else if (newStatus === undefined && selectedStatus.value !== null) {
+      selectedStatus.value = null;
+      getAllTutors(null);
+    }
+  }
+);
 </script>

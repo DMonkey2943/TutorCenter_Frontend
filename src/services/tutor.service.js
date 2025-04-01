@@ -5,6 +5,14 @@ class TutorService {
     this.api = createApiClient(baseUrl);
   }
 
+  // Map các status text sang số
+  statusMap = {
+    failed: -1,
+    pending: 0,
+    ok: 1,
+    not_created: "",
+  };
+
   async approveProfile(id, request) {
     return (await this.api.patch(`/${id}/approve`, request)).data;
   }
@@ -17,8 +25,17 @@ class TutorService {
     return (await this.api.post("/available", request)).data;
   }
 
-  async index() {
-    return (await this.api.get("/")).data;
+  async index(statusText = null) {
+    let url = "/";
+    if (statusText !== null) {
+      // Chuyển đổi từ text sang số nếu có trong map
+      const statusNumber = this.statusMap[statusText];
+      if (statusNumber !== undefined) {
+        url = `/?profile_status=${statusNumber}`;
+      }
+      // Nếu statusText không có trong map, chỉ gửi request không có status
+    }
+    return (await this.api.get(url)).data;
   }
 
   async store(request) {
