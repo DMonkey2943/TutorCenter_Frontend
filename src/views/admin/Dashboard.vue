@@ -83,7 +83,12 @@
             <template #renderItem="{ item }">
               <a-list-item>
                 <div>
-                  <router-link :to="{ name: 'admin.classes.detail', params: { id: item.id } }">
+                  <router-link
+                    :to="{
+                      name: 'admin.classes.detail',
+                      params: { id: item.id },
+                    }"
+                  >
                     Mã số lớp học: {{ item.id || "N/A" }}
                     <!-- {{ item.parent?.name || "N/A" }} -->
                   </router-link>
@@ -95,7 +100,9 @@
             </template>
             <template #footer>
               <div class="text-end">
-                <router-link :to="{ name: 'admin.classes' }">
+                <router-link
+                  :to="{ name: 'admin.classes', query: { status: 'pending' } }"
+                >
                   Xem tất cả <ArrowRightOutlined />
                 </router-link>
               </div>
@@ -110,7 +117,12 @@
             <template #renderItem="{ item }">
               <a-list-item>
                 <div>
-                  <router-link :to="{ name: 'admin.tutors.profile.detail', params: { id: item.id } }">
+                  <router-link
+                    :to="{
+                      name: 'admin.tutors.profile.detail',
+                      params: { id: item.id },
+                    }"
+                  >
                     #{{ item.id }}: {{ item.user.name }}
                   </router-link>
                   <div class="text-muted">
@@ -147,8 +159,11 @@
               >
             </a-list-item> -->
             <a-list-item>
-              <CheckOutlined /> Xử lý {{ stats.pendingReports }} báo cáo lớp học của gia sư
-              <router-link :to="{ name: 'admin.reports' }" class="ms-2">Xem</router-link>
+              <CheckOutlined /> Xử lý {{ stats.pendingReports }} báo cáo lớp học
+              của gia sư
+              <router-link :to="{ name: 'admin.reports' }" class="ms-2"
+                >Xem</router-link
+              >
             </a-list-item>
           </a-list>
         </a-card>

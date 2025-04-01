@@ -5,6 +5,14 @@ class ClassService {
     this.api = createApiClient(baseUrl);
   }
 
+  // Map các status text sang số
+  statusMap = {
+    canceled: -1,
+    pending: 0,
+    assigned: 1,
+    ended: 2,
+  };
+
   async getAllNewClasses(page = 1) {
     return (await this.api.get("/new", { params: { page } })).data;
   }
@@ -29,8 +37,17 @@ class ClassService {
     return (await this.api.patch(`/${classId}/complete`)).data;
   }
 
-  async index() {
-    return (await this.api.get("/")).data;
+  async index(statusText = null) {
+    let url = "/";
+    if (statusText !== null) {
+      // Chuyển đổi từ text sang số nếu có trong map
+      const statusNumber = this.statusMap[statusText];
+      if (statusNumber !== undefined) {
+        url = `/?status=${statusNumber}`;
+      }
+      // Nếu statusText không có trong map, chỉ gửi request không có status
+    }
+    return (await this.api.get(url)).data;
   }
 
   async store(request) {

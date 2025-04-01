@@ -25,7 +25,7 @@ export default [
         name: "admin.tutors.edit",
         component: () => import("../views/admin/tutors/edit.vue"),
       },
-      //   Quản lý gia sư
+      //   Quản lý hồ sơ gia sư
       {
         path: "tutors/profile",
         name: "admin.tutors.profile",
