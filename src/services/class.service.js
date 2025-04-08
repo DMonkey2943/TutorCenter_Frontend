@@ -18,14 +18,34 @@ class ClassService {
   }
 
   async recommendClasses(page = 1) {
+    //for tutors
     return (await this.api.get("/recommended", { params: { page } })).data;
   }
 
-  async getEnrolledClasses(page = 1) {
+  async getEnrolledClasses(statusText = null, page = 1) {
+    //for tutors
+    // return (await this.api.get("/enrolled", { params: { page } })).data;
+    if (statusText !== null) {
+      // Chuyển đổi từ text sang số nếu có trong map
+      const status = this.statusMap[statusText];
+      if (status !== undefined) {
+        return (await this.api.get("/enrolled", { params: { status, page } }))
+          .data;
+      }
+    }
     return (await this.api.get("/enrolled", { params: { page } })).data;
   }
 
-  async getRegisteredClasses(page = 1) {
+  async getRegisteredClasses(statusText = null, page = 1) {
+    //for parents
+    if (statusText !== null) {
+      // Chuyển đổi từ text sang số nếu có trong map
+      const status = this.statusMap[statusText];
+      if (status !== undefined) {
+        return (await this.api.get("/registered", { params: { status, page } }))
+          .data;
+      }
+    }
     return (await this.api.get("/registered", { params: { page } })).data;
   }
 

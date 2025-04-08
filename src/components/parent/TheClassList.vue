@@ -93,6 +93,15 @@
               <button class="btn btn-outline-primary">Xem chi tiết</button>
             </router-link>
           </div>
+          <div class="mt-2">
+            <div
+              v-if="classItem.pending_approvals_count"
+              class="alert alert-info text-center p-2"
+              role="alert"
+            >
+              Có {{ classItem.pending_approvals_count }} gia sư chờ duyệt!
+            </div>
+          </div>
         </div>
       </div>
     </div>
