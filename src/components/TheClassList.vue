@@ -91,7 +91,10 @@
               Hủy đăng ký
             </button>
             <button
-              v-else-if="classItem.approvals?.[0]?.status == 1 || classItem.approvals?.[0]?.status == 2"
+              v-else-if="
+                classItem.approvals?.[0]?.status == 1 ||
+                classItem.approvals?.[0]?.status == 2
+              "
               type="submit"
               class="btn btn-success"
               @click="confirmClassTeaching(classItem.id)"
@@ -370,18 +373,10 @@ const formattedLevelGender = (classItem) => {
 
 const enrollClass = async (classId) => {
   try {
-    if (authStore.tutor_profile_status == null) {
-      message.error("Hãy cập nhật hồ sơ của bạn để có thể đăng ký nhận lớp nhé!");
-    } else if (authStore.tutor_profile_status == -1) {
-      message.error("Hồ sơ của bạn bị từ chối. Hãy cập nhật lại chính xác hồ sơ của bạn để có thể đăng ký nhận lớp nhé!");
-    } else if (authStore.tutor_profile_status == 0) {
-      message.error("Hồ sơ của bạn đang chờ được duyệt. Vui lòng đợi trung tâm xét duyệt hồ sơ để có thể đăng ký nhận lớp nhé!");
-    } else {
-      const result = await ApprovalService.enrollClass({ class_id: classId });
-      // console.log(result);
-      if (result.success) {
-        message.success(`Đăng ký nhận lớp học MS:${classId} thành công`);
-      }
+    const result = await ApprovalService.enrollClass({ class_id: classId });
+    // console.log(result);
+    if (result.success) {
+      message.success(`Đăng ký nhận lớp học MS:${classId} thành công`);
     }
   } catch (error) {
     console.log(error);
@@ -389,10 +384,13 @@ const enrollClass = async (classId) => {
       const status = error.response.status;
       const errorMessage = error.response.data.message || "Có lỗi xảy ra";
 
-      if (status === 404) {
-        message.error(errorMessage);
+      // Xử lý cụ thể lỗi 403 (AuthorizationException)
+      if (status === 403) {
+        message.error(errorMessage); // Hiển thị thông báo từ backend
+      } else if (status === 404) {
+        message.error(errorMessage); // Lỗi không tìm thấy lớp
       } else {
-        message.error(errorMessage);
+        message.error(errorMessage); // Các lỗi khác
       }
     } else {
       console.log(error);
