@@ -114,7 +114,7 @@
                   </small>
                 </div>
               </div>
-              <!-- Gender -->
+              <!-- Gender tutor -->
               <div class="row mb-3">
                 <div class="col-12 col-md-3 text-start text-md-end">
                   <label for="">
@@ -122,13 +122,13 @@
                   </label>
                 </div>
                 <div class="col-12 col-md-8">
-                  <a-radio-group v-model:value="class1.gender">
+                  <a-radio-group v-model:value="class1.gender_tutor">
                     <a-radio :value="'M'">Nam</a-radio>
                     <a-radio :value="'F'">Nữ</a-radio>
                   </a-radio-group>
                   <div class="w-100"></div>
-                  <small v-if="errors.gender" class="text-danger">
-                    {{ errors.gender[0] }}
+                  <small v-if="errors.gender_tutor" class="text-danger">
+                    {{ errors.gender_tutor[0] }}
                   </small>
                 </div>
               </div>
