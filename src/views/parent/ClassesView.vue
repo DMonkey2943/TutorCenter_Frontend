@@ -48,10 +48,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, onBeforeUnmount } from "vue";
 import ClassService from "@/services/class.service";
 import TheClassList from "@/components/parent/TheClassList.vue";
 import { useRoute, useRouter } from "vue-router";
+import { useNavigationStore } from "@/stores/navigation";
+
+const navigationStore = useNavigationStore();
 
 const route = useRoute();
 const router = useRouter();
@@ -148,6 +151,13 @@ onMounted(() => {
   } else {
     getRegisterdClasses();
   }
+
+  navigationStore.setActiveRoute('parent.classes');
+});
+
+// Reset khi rời khỏi trang
+onBeforeUnmount(() => {
+  navigationStore.resetActiveRoute();
 });
 
 // Theo dõi thay đổi route để cập nhật lại danh sách
