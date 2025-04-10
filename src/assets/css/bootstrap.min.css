@@ -50,7 +50,7 @@
 
 body {
     margin: 0;
-    font-family: "Heebo", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
@@ -86,7 +86,7 @@ h6,
 .h6 {
     margin-top: 0;
     margin-bottom: 0.5rem;
-    font-family: "Inter", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-weight: 500;
     line-height: 1.2;
     color: #103741;
@@ -6275,7 +6275,7 @@ fieldset:disabled .btn {
     z-index: 1080;
     display: block;
     margin: 0;
-    font-family: "Heebo", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-style: normal;
     font-weight: 400;
     line-height: 1.5;
@@ -6402,7 +6402,7 @@ fieldset:disabled .btn {
     z-index: 1070;
     display: block;
     max-width: 276px;
-    font-family: "Heebo", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-style: normal;
     font-weight: 400;
     line-height: 1.5;

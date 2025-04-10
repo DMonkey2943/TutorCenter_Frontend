@@ -3,6 +3,9 @@
     --primary: #0d6efd;
     --light: #FFF5F3;
     --dark: #103741;
+    --bs-font-sans-serif: 'Roboto', sans-serif;
+    /* Chỉ định Roboto */
+    --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 .back-to-top {
