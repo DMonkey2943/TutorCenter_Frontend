@@ -8,7 +8,7 @@
           style="max-width: 600px"
         >
           <h1 class="mb-2">Lớp mới</h1>
-          <p>
+          <p class="fs-6">
             Trung tâm gia sư Cần Thơ thường xuyên cập nhật nhiều lớp dạy kèm mới
             mỗi ngày.
           </p>
@@ -19,7 +19,10 @@
               @click="showAllClasses"
               :class="isRecommendedView ? 'btn-outline-success' : 'btn-success'"
             >
+            <span class="button-with-icon">
+              <UnorderedListOutlined class="me-1"/>
               Tất cả lớp học
+            </span>
             </button>
             <button
             v-if="authStore.user.role == 'tutor'"
@@ -29,7 +32,10 @@
                 !isRecommendedView ? 'btn-outline-success' : 'btn-success'
               "
             >
+            <span class="button-with-icon">
+              <BulbFilled class="me-1" />
               Gợi ý lớp học phù hợp
+            </span>
             </button>
           </div>
         </div>
@@ -62,6 +68,8 @@ import ClassService from "@/services/class.service";
 import TheClassList from "@/components/TheClassList.vue";
 import message from "ant-design-vue/es/message";
 import { useAuthStore } from "@/stores/auth";
+import { UnorderedListOutlined, BulbFilled } from "@ant-design/icons-vue";
+
 
 const authStore = useAuthStore();
 

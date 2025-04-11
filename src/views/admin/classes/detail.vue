@@ -73,30 +73,30 @@
             <span>{{ class2.tutor.phone }}</span>
           </div>
           <!-- Hiển thị đánh giá -->
-            <div class="mb-4" v-if="class2.status == 2">
-              <span class="fw-bold">Phụ huynh đánh giá: </span>
-              <template v-if="tutorRating">
-                <a-rate :value="tutorRating.stars" disabled />
-                <span class="ms-2">({{ tutorRating.stars }}/5)</span>
-                <div v-if="tutorRating.comment" class="mt-1">
-                  <span class="fst-italic">{{ tutorRating.comment }}</span>
-                </div>
-              </template>
-              <template v-else>
-                <span class="text-muted">Chưa có đánh giá</span>
-              </template>
-            </div>
+          <div class="mb-4" v-if="class2.status == 2">
+            <span class="fw-bold">Phụ huynh đánh giá: </span>
+            <template v-if="tutorRating">
+              <a-rate :value="tutorRating.stars" disabled />
+              <span class="ms-2">({{ tutorRating.stars }}/5)</span>
+              <div v-if="tutorRating.comment" class="mt-1">
+                <span class="fst-italic">{{ tutorRating.comment }}</span>
+              </div>
+            </template>
+            <template v-else>
+              <span class="text-muted">Chưa có đánh giá</span>
+            </template>
+          </div>
         </span>
       </div>
     </div>
 
     <div class="row mt-3">
       <div class="col-12 d-grid d-sm-flex justify-content-sm-end mx-auto">
-        <a-button class="me-sm-2 mb-2">
-          <router-link :to="{ name: 'admin.classes' }">
+        <router-link :to="{ name: 'admin.classes' }">
+          <a-button class="me-sm-2 mb-2">
             <span>Trở về</span>
-          </router-link>
-        </a-button>
+          </a-button>
+        </router-link>
       </div>
     </div>
   </a-card>

@@ -76,13 +76,16 @@
         </div> -->
           <div class="row mt-1">
             <div class="col-12 d-grid d-sm-flex justify-content-sm-end mx-auto">
-              <a-button class="me-sm-2 mb-2">
-                <router-link :to="{ name: 'admin.tutors' }">
-                  <span>Hủy</span>
-                </router-link>
-              </a-button>
+              <router-link :to="{ name: 'admin.tutors' }">
+                <a-button class="me-sm-2 mb-2">
+                  <span>Trở về</span>
+                </a-button>
+              </router-link>
               <a-button type="primary" html-type="submit">
-                <span>Lưu</span>
+                <span class="button-with-icon">
+                  <SaveFilled class="me-1" />
+                  Lưu
+                </span>
               </a-button>
             </div>
           </div>
@@ -99,6 +102,7 @@ import { useMenuAdmin } from "@/stores/use-menu-admin";
 import UserService from "@/services/user.service";
 import TutorService from "@/services/tutor.service";
 import message from "ant-design-vue/es/message";
+import { SaveFilled } from "@ant-design/icons-vue";
 
 useMenuAdmin().onSelectedKeys(["admin-tutors"]);
 

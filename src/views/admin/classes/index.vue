@@ -19,9 +19,14 @@
           </a-select>
         </div>
 
-        <a-button type="primary">
-          <router-link :to="{ name: 'admin.classes.create' }">Thêm</router-link>
-        </a-button>
+        <router-link :to="{ name: 'admin.classes.create' }">
+          <a-button type="primary">
+            <span class="button-with-icon">
+              <PlusOutlined class="me-1" />
+              Thêm
+            </span>
+          </a-button>
+        </router-link>
       </div>
     </div>
     <div class="row">
@@ -63,7 +68,9 @@
                   params: { id: record.id },
                 }"
               >
-                <a-button class="me-0 me-sm-2 mb-2 mb-sm-0"> Xem </a-button>
+                <a-button class="me-0 me-sm-2 mb-2 mb-sm-0">
+                  <i class="fa fa-eye" aria-hidden="true"></i>
+                </a-button>
               </router-link>
               <router-link
                 :to="{
@@ -72,11 +79,12 @@
                 }"
               >
                 <a-button type="primary" class="me-0 me-sm-2 mb-2 mb-sm-0">
-                  Sửa
-                </a-button> </router-link
-              ><span>
+                  <EditOutlined class="d-flex" />
+                </a-button>
+              </router-link>
+              <span>
                 <a-button @click="deleteClass(record.id)" type="primary" danger>
-                  Xóa
+                  <DeleteOutlined class="d-flex" />
                 </a-button>
               </span>
             </template>
@@ -94,6 +102,11 @@ import ClassService from "@/services/class.service";
 import { Modal } from "ant-design-vue";
 import message from "ant-design-vue/es/message";
 import { useRoute, useRouter } from "vue-router";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+} from "@ant-design/icons-vue";
 
 useMenuAdmin().onSelectedKeys(["admin-classes"]);
 

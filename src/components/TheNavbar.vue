@@ -7,7 +7,7 @@
     <router-link :to="{ name: 'home' }" class="navbar-brand">
       <h3 class="m-0 text-primary" style="color: #fe5d37">Gia Sư Cần Thơ</h3>
     </router-link>
-    
+
     <!-- Toggle button -->
     <button
       type="button"
@@ -17,7 +17,7 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
-    
+
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <div class="navbar-nav mx-auto text-uppercase">
         <!-- Trang chủ -->
@@ -27,7 +27,7 @@
           :class="{ active: navigationStore.isActiveRoute('home') }"
           >Trang chủ</router-link
         >
-        
+
         <!-- Lớp mới -->
         <router-link
           :to="{ name: 'classes' }"
@@ -35,13 +35,15 @@
           :class="{ active: navigationStore.isActiveRoute('classes') }"
           >Lớp mới</router-link
         >
-        
+
         <!-- Lớp đã đăng ký nhận (cho gia sư) -->
         <router-link
           v-if="authStore.user_role == 'tutor'"
           :to="{ name: 'tutor.enrolledClasses' }"
           class="nav-item fw-semibold nav-link"
-          :class="{ active: navigationStore.isActiveRoute('tutor.enrolledClasses') }"
+          :class="{
+            active: navigationStore.isActiveRoute('tutor.enrolledClasses'),
+          }"
           >Lớp đã đăng ký nhận</router-link
         >
 
@@ -53,7 +55,7 @@
           :class="{ active: navigationStore.isActiveRoute('parent.classes') }"
           >Lớp đã đăng ký tìm gia sư</router-link
         >
-        
+
         <!-- Dropdown menu cho user đã đăng nhập -->
         <div v-if="authStore.user_id" class="nav-item fw-semibold dropdown">
           <a
@@ -75,7 +77,9 @@
               v-if="authStore.user_role == 'tutor'"
               :to="{ name: 'tutor.profile' }"
               class="dropdown-item"
-              :class="{ active: navigationStore.isActiveRoute('tutor.profile') }"
+              :class="{
+                active: navigationStore.isActiveRoute('tutor.profile'),
+              }"
               >Hồ sơ</router-link
             >
             <div
@@ -102,10 +106,12 @@
           :to="{ name: 'parent.registerClass' }"
           v-if="authStore.user_role == 'parent'"
           class="nav-item fw-semibold nav-link btn btn-primary text-white px-3 mt-2 mt-lg-0 d-lg-none"
-          :class="{ active: navigationStore.isActiveRoute('parent.registerClass') }"
+          :class="{
+            active: navigationStore.isActiveRoute('parent.registerClass'),
+          }"
         >
           Đăng ký lớp học
-          <i class="fa fa-arrow-right ms-2"></i>
+          <i class="fa fa-arrow-right ms-1"></i>
         </router-link>
 
         <!-- Đăng nhập button (mobile) -->
@@ -115,8 +121,10 @@
           class="nav-item fw-semibold nav-link btn btn-primary text-white px-3 mt-2 mt-lg-0 d-lg-none"
           :class="{ active: navigationStore.isActiveRoute('login') }"
         >
-          Đăng nhập
-          <i class="fa fa-arrow-right ms-2"></i>
+          <span class="button-with-icon justify-content-center">
+            Đăng nhập
+            <LoginOutlined class="ms-1 d-flex" />
+          </span>
         </router-link>
       </div>
 
@@ -126,8 +134,10 @@
         class="btn btn-primary rounded-pill px-3 d-none d-lg-block fw-semibold text-white"
       >
         <router-link :to="{ name: 'login' }" class="text-white">
-          Đăng nhập
-          <i class="fa fa-arrow-right ms-3"></i>
+          <span class="button-with-icon">
+            Đăng nhập
+            <LoginOutlined class="ms-1" />
+          </span>
         </router-link>
       </button>
       <button
@@ -136,7 +146,7 @@
       >
         <router-link :to="{ name: 'parent.registerClass' }" class="text-white">
           Đăng ký lớp học
-          <i class="fa fa-arrow-right ms-3"></i>
+          <i class="fa fa-arrow-right ms-1"></i>
         </router-link>
       </button>
     </div>
@@ -148,7 +158,8 @@ import { useAuthStore } from "@/stores/auth";
 import { useNavigationStore } from "@/stores/navigation";
 import { useRouter } from "vue-router";
 import message from "ant-design-vue/es/message";
-import { onMounted, onBeforeUnmount } from 'vue';
+import { onMounted, onBeforeUnmount } from "vue";
+import { LoginOutlined } from "@ant-design/icons-vue";
 
 const authStore = useAuthStore();
 const navigationStore = useNavigationStore();

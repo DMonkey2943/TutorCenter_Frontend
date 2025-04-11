@@ -88,7 +88,10 @@
               class="btn btn-outline-danger"
               @click="unenrollClass(classItem.id)"
             >
-              Hủy đăng ký
+              <span class="button-with-icon">
+                Hủy đăng ký
+                <CloseCircleOutlined class="ms-1" />
+              </span>
             </button>
             <button
               v-else-if="
@@ -99,7 +102,10 @@
               class="btn btn-success"
               @click="confirmClassTeaching(classItem.id)"
             >
-              Xác nhận nhận lớp
+              <span class="button-with-icon">
+                Xác nhận nhận lớp
+                <CheckCircleOutlined class="ms-1" />
+              </span>
             </button>
             <div
               v-else-if="classItem.approvals?.[0]?.status == -1"
@@ -114,7 +120,10 @@
               class="btn btn-primary"
               @click="enrollClass(classItem.id)"
             >
-              Đăng ký nhận lớp
+              <span class="button-with-icon">
+                Đăng ký nhận lớp
+                <ImportOutlined class="ms-1" />
+              </span>
             </button>
 
             <div
@@ -139,7 +148,10 @@
               data-bs-target="#classDetailModal"
               @click="getClassDetail(classItem.id)"
             >
-              Xem chi tiết
+              <span class="button-with-icon">
+                Xem chi tiết
+                <InfoCircleOutlined class="ms-1" />
+              </span>
             </button>
             <div
               v-else
@@ -257,7 +269,10 @@
             data-bs-toggle="modal"
             data-bs-target="#reportModal"
           >
-            Báo cáo vấn đề
+            <span class="button-with-icon">
+              Báo cáo vấn đề
+              <WarningOutlined class="ms-1"/>
+            </span>
           </button>
         </div>
       </div>
@@ -276,7 +291,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="reportModalLabel">
-            Báo cáo vấn đề - MS: {{ classDetail.id }}
+            Báo cáo vấn đề - MS lớp học: {{ classDetail.id }}
           </h5>
           <button
             type="button"
@@ -340,6 +355,14 @@ import { Modal } from "ant-design-vue";
 import ClassService from "@/services/class.service";
 import RateService from "@/services/rate.service";
 import ReportService from "@/services/report.service";
+import {
+  ImportOutlined,
+  CloseCircleOutlined,
+  CheckCircleOutlined,
+  InfoCircleOutlined,
+  WarningOutlined,
+} from "@ant-design/icons-vue";
+
 const authStore = useAuthStore();
 
 // Nhận prop classes từ component cha

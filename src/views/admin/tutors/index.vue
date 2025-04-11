@@ -2,9 +2,14 @@
   <a-card title="QUẢN LÝ GIA SƯ" style="width: 100%">
     <div class="row mb-3">
       <div class="col-12 d-flex justify-content-end">
+        <router-link :to="{ name: 'admin.tutors.create' }">
         <a-button type="primary">
-          <router-link :to="{ name: 'admin.tutors.create' }">Thêm</router-link>
-        </a-button>
+            <span class="button-with-icon">
+              <PlusOutlined class="me-1" />
+              Thêm
+            </span>
+          </a-button>
+        </router-link>
       </div>
     </div>
     <div class="row">
@@ -30,12 +35,12 @@
                 :to="{ name: 'admin.tutors.edit', params: { id: record.id } }"
               >
                 <a-button type="primary" class="me-0 me-sm-2 mb-2 mb-sm-0">
-                  Sửa
+                  <EditOutlined class="d-flex" />
                 </a-button>
               </router-link>
               <span>
                 <a-button @click="deleteTutor(record.id)" type="primary" danger>
-                  Xóa
+                  <DeleteOutlined class="d-flex" />
                 </a-button>
               </span>
             </template>
@@ -52,6 +57,11 @@ import { useMenuAdmin } from "@/stores/use-menu-admin";
 import TutorService from "@/services/tutor.service";
 import { Modal } from "ant-design-vue";
 import message from "ant-design-vue/es/message";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+} from "@ant-design/icons-vue";
 
 useMenuAdmin().onSelectedKeys(["admin-tutors"]);
 

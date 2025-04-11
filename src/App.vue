@@ -14,3 +14,10 @@ onMounted(async () => {
   await authStore.init();
 });
 </script>
+
+<style>
+.button-with-icon {
+  display: flex !important;
+  align-items: center; /* Căn giữa theo chiều dọc */
+}
+</style>

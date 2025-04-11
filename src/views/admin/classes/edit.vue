@@ -289,13 +289,16 @@
         <!-- Action -->
         <div class="row mt-1">
           <div class="col-12 d-grid d-sm-flex justify-content-sm-end mx-auto">
-            <a-button class="me-sm-2 mb-2">
-              <router-link :to="{ name: 'admin.classes' }">
+            <router-link :to="{ name: 'admin.classes' }">
+              <a-button class="me-sm-2 mb-2">
                 <span>Trở về</span>
-              </router-link>
-            </a-button>
+              </a-button>
+            </router-link>
             <a-button type="primary" html-type="submit" @click="updateClass">
-              <span>Lưu</span>
+              <span class="button-with-icon">
+                <SaveFilled class="me-1" />
+                Lưu
+              </span>
             </a-button>
           </div>
         </div>
@@ -319,6 +322,7 @@ import LevelService from "@/services/level.service";
 import message from "ant-design-vue/es/message";
 import ParentService from "@/services/parent.service";
 import WardService from "@/services/ward.service";
+import { SaveFilled } from "@ant-design/icons-vue";
 
 useMenuAdmin().onSelectedKeys(["admin-classes"]);
 
@@ -369,7 +373,9 @@ const getClass = async () => {
       ? dataClass.subjects.map((subject) => subject.id)
       : [];
     class1.tuition = dataClass.tuition ?? null;
-    class1.start_date = dataClass.start_date ? ref(dayjs(dataClass.start_date, dateFormat)) : null;
+    class1.start_date = dataClass.start_date
+      ? ref(dayjs(dataClass.start_date, dateFormat))
+      : null;
     // tutorProfile.birthday = dataProfile.birthday
     //   ? ref(dayjs(dataProfile.birthday, dateFormat))
     //   : null;

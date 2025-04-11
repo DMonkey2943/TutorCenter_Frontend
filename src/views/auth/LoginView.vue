@@ -49,9 +49,10 @@
                   html-type="submit"
                   :disabled="authStore.loading"
                 >
-                  <span>{{
-                    authStore.loading ? "Đang xử lý..." : "Đăng nhập"
-                  }}</span>
+                  <span class="button-with-icon justify-content-center">
+                    {{authStore.loading ? "Đang xử lý..." : "Đăng nhập"}}
+                  <LoginOutlined class="ms-2" />
+                  </span>
                 </a-button>
               </div>
             </div>
@@ -82,6 +83,7 @@ import { reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 import message from "ant-design-vue/es/message";
+import { LoginOutlined } from "@ant-design/icons-vue";
 
 const router = useRouter();
 const authStore = useAuthStore();

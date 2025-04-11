@@ -1,289 +1,8 @@
 <template>
   <a-card title="THÊM MỚI LỚP HỌC" style="width: 100%">
     <div class="row">
-      <div class="col-12 col-lg-5">
-        <!-- Parent -->
-        <div class="row mb-3">
-          <div class="col-12 col-md-3 text-start text-md-end">
-            <label for="">
-              <span class="text-danger">*</span>
-              <span>Phụ huynh:</span>
-            </label>
-          </div>
-          <div class="col-12 col-md-8">
-            <a-select
-              v-model:value="class1.parent_id"
-              show-search
-              placeholder="--- Chọn phụ huynh ---"
-              style="width: 100%"
-              :options="_parents"
-              :filter-option="filterOption"
-            ></a-select>
-            <div class="w-100"></div>
-            <small v-if="errors.parent_id" class="text-danger">
-              {{ errors.parent_id[0] }}
-            </small>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-12 col-md-3 text-start text-md-end">
-            <label for="">
-              <span class="text-danger">*</span>
-              <span>Ngày dự kiến bắt đầu:</span>
-            </label>
-          </div>
-          <div class="col-12 col-md-8">
-            <a-date-picker
-              v-model:value="class1.start_date"
-              :disabled-date="disabledStartDate"
-              format="YYYY-MM-DD"
-              placeholder="Chọn ngày bắt đầu"
-            />
-            <div class="w-100"></div>
-            <small v-if="errors.start_date" class="text-danger">
-              {{ errors.start_date[0] }}
-            </small>
-          </div>
-        </div>
-
-        <!-- Address (deatail, ward_id, district_id) -->
-        <div class="row mb-3">
-          <div class="col-12 col-md-3 text-start text-md-end">
-            <label for="">
-              <span class="text-danger">*</span>
-              <span>Địa chỉ:</span>
-            </label>
-          </div>
-          <div class="col-12 col-md-8">
-            <!-- Quận/Huyện -->
-            <a-select
-              v-model:value="class1.district_id"
-              class="mt-0"
-              show-search
-              placeholder="--- Chọn Quận/huyện ---"
-              style="width: 100%"
-              :options="_districts"
-              :filter-option="filterOption"
-              @change="getWards"
-            ></a-select>
-            <small v-if="errors.district_id" class="text-danger">
-              {{ errors.district_id[0] }}
-            </small>
-            <!-- Phường/Xã -->
-            <a-select
-              v-model:value="class1.ward_id"
-              class="mt-2"
-              show-search
-              placeholder="--- Chọn Phường/Xã ---"
-              style="width: 100%"
-              :options="_wards"
-              :filter-option="filterOption"
-            ></a-select>
-            <div class="w-100"></div>
-            <small v-if="errors.ward_id" class="text-danger">
-              {{ errors.ward_id[0] }}
-            </small>
-            <!-- Số nhà, tên đường -->
-            <a-input
-              class="mt-2"
-              v-model:value="class1.detail"
-              placeholder="Số nhà, tên đường"
-            />
-            <div class="w-100"></div>
-            <small v-if="errors.detail" class="text-danger">
-              {{ errors.detail[0] }}
-            </small>
-          </div>
-        </div>
-        <!-- Tuition -->
-        <div class="row mb-3">
-          <div class="col-12 col-md-3 text-start text-md-end">
-            <label for="">
-              <span class="text-danger">*</span>
-              <span>Học phí/buổi:</span>
-            </label>
-          </div>
-          <div class="col-12 col-md-8">
-            <!-- <a-radio-group v-model:value="class1.tuition"> </a-radio-group> -->
-            <a-radio-group v-model:value="selectedTuitionType">
-              <a-radio value="negotiable">Thỏa thuận</a-radio>
-              <a-radio value="fixed">Học phí cố định</a-radio>
-            </a-radio-group>
-
-            <!-- Input học phí chỉ hiện khi chọn "Học phí cố định" -->
-            <div v-if="selectedTuitionType === 'fixed'" class="mt-2">
-              <a-input-number
-                v-model:value="fixedTuitionAmount"
-                :min="50000"
-                :max="1000000"
-                :step="5000"
-                placeholder="Nhập học phí"
-                @change="handleTuitionChange"
-              />
-              <span class="ms-2">VNĐ/buổi</span>
-            </div>
-
-            <div class="w-100"></div>
-            <small v-if="errors.tuition" class="text-danger">
-              {{ errors.tuition[0] }}
-            </small>
-          </div>
-        </div>
-        <!-- Gender -->
-        <div class="row mb-3">
-          <div class="col-12 col-md-3 text-start text-md-end">
-            <label for="">
-              <span>Giới tính GS:</span>
-            </label>
-          </div>
-          <div class="col-12 col-md-8">
-            <a-radio-group v-model:value="class1.gender">
-              <a-radio :value="'M'">Nam</a-radio>
-              <a-radio :value="'F'">Nữ</a-radio>
-            </a-radio-group>
-            <div class="w-100"></div>
-            <small v-if="errors.gender" class="text-danger">
-              {{ errors.gender[0] }}
-            </small>
-          </div>
-        </div>
-        <!-- Level -->
-        <div class="row mb-3">
-          <div class="col-12 col-md-3 text-start text-md-end">
-            <label for="">
-              <span>Trình độ GS:</span>
-            </label>
-          </div>
-          <div class="col-12 col-md-8">
-            <a-select
-              v-model:value="class1.level_id"
-              show-search
-              placeholder="--- Chọn trình độ GS ---"
-              style="width: 100%"
-              :options="_levels"
-              :filter-option="filterOption"
-            ></a-select>
-            <div class="w-100"></div>
-            <small v-if="errors.level_id" class="text-danger">
-              {{ errors.level_id[0] }}
-            </small>
-          </div>
-        </div>
-        <!-- Request -->
-        <div class="row mb-3">
-          <div class="col-12 col-md-3 text-start text-md-end">
-            <label for="">
-              <span>Yêu cầu khác:</span>
-            </label>
-          </div>
-          <div class="col-12 col-md-8">
-            <a-textarea
-              v-model:value="class1.request"
-              placeholder=""
-              :rows="4"
-            />
-            <div class="w-100"></div>
-            <small v-if="errors.request" class="text-danger">
-              {{ errors.request[0] }}
-            </small>
-          </div>
-        </div>
-        <!-- Search tutors to choose for class -->
-        <div class="row mb-3">
-          <a-form-item>
-            <a-button type="primary" @click="searchTutors" :loading="loading"
-              >Tìm gia sư phù hợp</a-button
-            >
-          </a-form-item>
-          <hr />
-          <!-- Danh sách gia sư -->
-          <div v-if="tutors.length > 0" class="tutor-list mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h4>Gia sư phù hợp ({{ tutors.length }})</h4>
-              <span class="text-muted"
-                >Đã chọn: {{ class1.tutors.length }}</span
-              >
-            </div>
-
-            <a-checkbox-group v-model:value="class1.tutors" class="w-100">
-              <div class="row">
-                <div
-                  class="col-12 mb-3"
-                  v-for="tutor in tutors"
-                  :key="tutor.id"
-                >
-                  <a-card hoverable class="tutor-card position-relative">
-                    <a-checkbox
-                      :value="tutor.id"
-                      class="tutor-select position-absolute"
-                      style="top: 10px; right: 10px"
-                    ></a-checkbox>
-                    <div class="d-flex">
-                      <div class="tutor-avatar me-3">
-                        <!-- Display avatar if available, otherwise show initials -->
-                        <img
-                          v-if="tutor.avatar"
-                          :src="getAvatarUrl(tutor.avatar)"
-                          class="rounded-circle"
-                          style="width: 50px; height: 50px; object-fit: cover"
-                          :alt="tutor.user.name"
-                        />
-                        <div
-                          v-else
-                          class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center"
-                          style="width: 50px; height: 50px; font-size: 18px"
-                        >
-                          {{ tutor.user.name.charAt(0) }}
-                        </div>
-                      </div>
-                      <div class="tutor-info w-100">
-                        <a-popover
-                          :title="tutor.user.name"
-                          trigger="hover"
-                          placement="top"
-                        >
-                          <template #content>
-                            <p>
-                              <strong>Trình độ:</strong>
-                              {{ tutor.level.name }}
-                            </p>
-                            <p>
-                              <strong>Chuyên ngành:</strong>
-                              {{ tutor.major }} - {{ tutor.school }}
-                            </p>
-                            <p>
-                              <strong>Môn dạy:</strong>
-                              {{ tutor.subjects.map((s) => s.name).join(", ") }}
-                            </p>
-                            <p>
-                              <strong>Khối lớp dạy:</strong>
-                              {{ tutor.grades.map((s) => s.name).join(", ") }}
-                            </p>
-                            <p>
-                              <strong>Mức lương/buổi:</strong>
-                              {{ tutor.tuition.range }}
-                            </p>
-                          </template>
-                          <div>
-                            <h6 class="mb-1">{{ tutor.user.name }}</h6>
-                            <p class="text-muted mb-1">MS: {{ tutor.id }}</p>
-                          </div>
-                        </a-popover>
-                      </div>
-                    </div>
-                  </a-card>
-                </div>
-              </div>
-            </a-checkbox-group>
-          </div>
-
-          <div v-else-if="searched" class="alert alert-info mt-3">
-            Không tìm thấy gia sư phù hợp với tiêu chí của bạn.
-          </div>
-        </div>
-      </div>
       <div class="col-12 col-lg-7">
+        <h5 class="">Thông tin lớp học</h5>
         <!-- Subjects -->
         <div class="row mb-3">
           <div class="col-12 col-md-3 text-start text-md-end">
@@ -376,19 +95,313 @@
             </small>
           </div>
         </div>
-
-        <!-- Action -->
-        <div class="row mt-1">
-          <div class="col-12 d-grid d-sm-flex justify-content-sm-end mx-auto">
-            <a-button class="me-sm-2 mb-2">
-              <router-link :to="{ name: 'admin.classes' }">
-                <span>Trở về</span>
-              </router-link>
-            </a-button>
-            <a-button type="primary" html-type="submit" @click="createClass">
-              <span>Lưu</span>
-            </a-button>
+      </div>
+      <div class="col-12 col-lg-5">
+        <h5 class="">Thông tin liên lạc</h5>
+        <!-- Parent -->
+        <div class="row mb-3">
+          <div class="col-12 col-md-3 text-start text-md-end">
+            <label for="">
+              <span class="text-danger">*</span>
+              <span>Phụ huynh:</span>
+            </label>
           </div>
+          <div class="col-12 col-md-8">
+            <a-select
+              v-model:value="class1.parent_id"
+              show-search
+              placeholder="--- Chọn phụ huynh ---"
+              style="width: 100%"
+              :options="_parents"
+              :filter-option="filterOption"
+            ></a-select>
+            <div class="w-100"></div>
+            <small v-if="errors.parent_id" class="text-danger">
+              {{ errors.parent_id[0] }}
+            </small>
+          </div>
+        </div>
+        <!-- Address (deatail, ward_id, district_id) -->
+        <div class="row mb-3">
+          <div class="col-12 col-md-3 text-start text-md-end">
+            <label for="">
+              <span class="text-danger">*</span>
+              <span>Địa chỉ:</span>
+            </label>
+          </div>
+          <div class="col-12 col-md-8">
+            <!-- Quận/Huyện -->
+            <a-select
+              v-model:value="class1.district_id"
+              class="mt-0"
+              show-search
+              placeholder="--- Chọn Quận/huyện ---"
+              style="width: 100%"
+              :options="_districts"
+              :filter-option="filterOption"
+              @change="getWards"
+            ></a-select>
+            <small v-if="errors.district_id" class="text-danger">
+              {{ errors.district_id[0] }}
+            </small>
+            <!-- Phường/Xã -->
+            <a-select
+              v-model:value="class1.ward_id"
+              class="mt-2"
+              show-search
+              placeholder="--- Chọn Phường/Xã ---"
+              style="width: 100%"
+              :options="_wards"
+              :filter-option="filterOption"
+            ></a-select>
+            <div class="w-100"></div>
+            <small v-if="errors.ward_id" class="text-danger">
+              {{ errors.ward_id[0] }}
+            </small>
+            <!-- Số nhà, tên đường -->
+            <a-input
+              class="mt-2"
+              v-model:value="class1.detail"
+              placeholder="Số nhà, tên đường"
+            />
+            <div class="w-100"></div>
+            <small v-if="errors.detail" class="text-danger">
+              {{ errors.detail[0] }}
+            </small>
+          </div>
+        </div>
+
+        <!-- Start date -->
+        <div class="row mb-3">
+          <div class="col-12 col-md-3 text-start text-md-end">
+            <label for="">
+              <span class="text-danger">*</span>
+              <span>Ngày dự kiến bắt đầu:</span>
+            </label>
+          </div>
+          <div class="col-12 col-md-8">
+            <a-date-picker
+              v-model:value="class1.start_date"
+              :disabled-date="disabledStartDate"
+              format="YYYY-MM-DD"
+              placeholder="Chọn ngày bắt đầu"
+            />
+            <div class="w-100"></div>
+            <small v-if="errors.start_date" class="text-danger">
+              {{ errors.start_date[0] }}
+            </small>
+          </div>
+        </div>
+
+        <h5 class="">Yêu cầu gia sư</h5>
+        <!-- Tuition -->
+        <div class="row mb-3">
+          <div class="col-12 col-md-3 text-start text-md-end">
+            <label for="">
+              <span class="text-danger">*</span>
+              <span>Học phí /buổi:</span>
+            </label>
+          </div>
+          <div class="col-12 col-md-8">
+            <!-- <a-radio-group v-model:value="class1.tuition"> </a-radio-group> -->
+            <a-radio-group v-model:value="selectedTuitionType">
+              <a-radio value="negotiable">Thỏa thuận</a-radio>
+              <a-radio value="fixed">Học phí cố định</a-radio>
+            </a-radio-group>
+
+            <!-- Input học phí chỉ hiện khi chọn "Học phí cố định" -->
+            <div v-if="selectedTuitionType === 'fixed'" class="mt-2">
+              <a-input-number
+                v-model:value="fixedTuitionAmount"
+                :min="50000"
+                :max="1000000"
+                :step="5000"
+                placeholder="Nhập học phí"
+                @change="handleTuitionChange"
+              />
+              <span class="ms-2">VNĐ/buổi</span>
+            </div>
+
+            <div class="w-100"></div>
+            <small v-if="errors.tuition" class="text-danger">
+              {{ errors.tuition[0] }}
+            </small>
+          </div>
+        </div>
+        <!-- Gender -->
+        <div class="row mb-3">
+          <div class="col-12 col-md-3 text-start text-md-end">
+            <label for="">
+              <span>Giới tính GS:</span>
+            </label>
+          </div>
+          <div class="col-12 col-md-8">
+            <a-radio-group v-model:value="class1.gender">
+              <a-radio :value="'M'">Nam</a-radio>
+              <a-radio :value="'F'">Nữ</a-radio>
+            </a-radio-group>
+            <div class="w-100"></div>
+            <small v-if="errors.gender" class="text-danger">
+              {{ errors.gender[0] }}
+            </small>
+          </div>
+        </div>
+        <!-- Level -->
+        <div class="row mb-3">
+          <div class="col-12 col-md-3 text-start text-md-end">
+            <label for="">
+              <span>Trình độ GS:</span>
+            </label>
+          </div>
+          <div class="col-12 col-md-8">
+            <a-select
+              v-model:value="class1.level_id"
+              show-search
+              placeholder="--- Chọn trình độ GS ---"
+              style="width: 100%"
+              :options="_levels"
+              :filter-option="filterOption"
+            ></a-select>
+            <div class="w-100"></div>
+            <small v-if="errors.level_id" class="text-danger">
+              {{ errors.level_id[0] }}
+            </small>
+          </div>
+        </div>
+        <!-- Request -->
+        <div class="row mb-3">
+          <div class="col-12 col-md-3 text-start text-md-end">
+            <label for="">
+              <span>Yêu cầu khác:</span>
+            </label>
+          </div>
+          <div class="col-12 col-md-8">
+            <a-textarea
+              v-model:value="class1.request"
+              placeholder=""
+              :rows="2"
+            />
+            <div class="w-100"></div>
+            <small v-if="errors.request" class="text-danger">
+              {{ errors.request[0] }}
+            </small>
+          </div>
+        </div>
+        <hr />
+        <!-- Search tutors to choose for class -->
+        <div class="row">
+          <a-form-item>
+            <a-button type="primary" @click="searchTutors" :loading="loading">
+              <span class="button-with-icon">
+                <BulbFilled class="me-1" />
+                Gợi ý gia sư phù hợp
+              </span>
+            </a-button>
+          </a-form-item>
+          <!-- Danh sách gia sư -->
+          <div v-if="tutors.length > 0" class="tutor-list">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5>Gia sư phù hợp ({{ tutors.length }})</h5>
+              <span class="text-muted"
+                >Đã chọn: {{ class1.tutors.length }}</span
+              >
+            </div>
+            <div>
+              <a-checkbox-group v-model:value="class1.tutors" class="w-100">
+                <div class="row" style="height: 300px; overflow-y: auto">
+                  <div
+                    class="col-12 mb-3"
+                    v-for="tutor in tutors"
+                    :key="tutor.id"
+                  >
+                    <a-card hoverable class="tutor-card position-relative">
+                      <a-checkbox
+                        :value="tutor.id"
+                        class="tutor-select position-absolute"
+                        style="top: 10px; right: 10px"
+                      ></a-checkbox>
+                      <div class="d-flex">
+                        <div class="tutor-avatar me-3">
+                          <!-- Display avatar if available, otherwise show initials -->
+                          <img
+                            v-if="tutor.avatar"
+                            :src="getAvatarUrl(tutor.avatar)"
+                            class="rounded-circle"
+                            style="width: 50px; height: 50px; object-fit: cover"
+                            :alt="tutor.user.name"
+                          />
+                          <div
+                            v-else
+                            class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center"
+                            style="width: 50px; height: 50px; font-size: 18px"
+                          >
+                            {{ tutor.user.name.charAt(0) }}
+                          </div>
+                        </div>
+                        <div class="tutor-info w-100">
+                          <a-popover
+                            :title="tutor.user.name"
+                            trigger="hover"
+                            placement="top"
+                          >
+                            <template #content>
+                              <p>
+                                <strong>Trình độ:</strong>
+                                {{ tutor.level.name }}
+                              </p>
+                              <p>
+                                <strong>Chuyên ngành:</strong>
+                                {{ tutor.major }} - {{ tutor.school }}
+                              </p>
+                              <p>
+                                <strong>Môn dạy:</strong>
+                                {{
+                                  tutor.subjects.map((s) => s.name).join(", ")
+                                }}
+                              </p>
+                              <p>
+                                <strong>Khối lớp dạy:</strong>
+                                {{ tutor.grades.map((s) => s.name).join(", ") }}
+                              </p>
+                              <p>
+                                <strong>Mức lương/buổi:</strong>
+                                {{ tutor.tuition.range }}
+                              </p>
+                            </template>
+                            <div>
+                              <h6 class="mb-1">{{ tutor.user.name }}</h6>
+                              <p class="text-muted mb-1">MS: {{ tutor.id }}</p>
+                            </div>
+                          </a-popover>
+                        </div>
+                      </div>
+                    </a-card>
+                  </div>
+                </div>
+              </a-checkbox-group>
+            </div>
+          </div>
+
+          <div v-else-if="searched" class="alert alert-info">
+            Không tìm thấy gia sư phù hợp với tiêu chí của bạn.
+          </div>
+        </div>
+      </div>
+
+      <!-- Action -->
+      <div class="row mt-5">
+        <div class="col-12 d-grid d-sm-flex justify-content-sm-end mx-auto">
+          <router-link :to="{ name: 'admin.classes' }">
+            <a-button class="me-sm-2 mb-2">
+              <span> Trở về </span>
+            </a-button>
+          </router-link>
+          <a-button type="primary" html-type="submit" @click="createClass">
+            <span class="button-with-icon">
+              <SaveFilled class="me-1" />
+              Lưu
+            </span>
+          </a-button>
         </div>
       </div>
     </div>
@@ -410,6 +423,7 @@ import message from "ant-design-vue/es/message";
 import ParentService from "@/services/parent.service";
 import TutorService from "@/services/tutor.service";
 import WardService from "@/services/ward.service";
+import { BulbFilled, SaveFilled } from "@ant-design/icons-vue";
 
 useMenuAdmin().onSelectedKeys(["admin-classes"]);
 

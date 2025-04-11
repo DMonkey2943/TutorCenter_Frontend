@@ -319,13 +319,16 @@
 
           <div class="row mt-1">
             <div class="col-12 d-grid d-sm-flex justify-content-sm-end mx-auto">
-              <a-button class="me-sm-2 mb-2">
-                <router-link :to="{ name: 'admin.tutors.profile' }">
+              <router-link :to="{ name: 'admin.tutors.profile' }">
+                <a-button class="me-sm-2 mb-2">
                   <span>Trở về</span>
-                </router-link>
-              </a-button>
+                </a-button>
+              </router-link>
               <a-button type="primary" html-type="submit">
-                <span>Lưu</span>
+                <span class="button-with-icon">
+                  <SaveFilled class="me-1" />
+                  Lưu
+                </span>
               </a-button>
             </div>
           </div>
@@ -361,6 +364,7 @@ import LevelService from "@/services/level.service";
 import TuitionService from "@/services/tuition.service";
 import message from "ant-design-vue/es/message";
 import dayjs from "dayjs";
+import { SaveFilled } from "@ant-design/icons-vue";
 
 useMenuAdmin().onSelectedKeys(["admin-tutors-profile"]);
 

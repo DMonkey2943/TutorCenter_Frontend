@@ -163,21 +163,24 @@
 
     <div class="row mt-3">
       <div class="col-12 d-grid d-sm-flex justify-content-sm-end mx-auto">
-        <a-button v-if="!status" type="primary" class="me-sm-2 mb-2">
-          <router-link
-            :to="{
-              name: 'admin.tutors.profile.edit',
-              params: { id: tutorProfile.id },
-            }"
-          >
-            <span>Cập nhật hồ sơ ngay!</span>
-          </router-link>
-        </a-button>
-        <a-button class="me-sm-2 mb-2">
-          <router-link :to="{ name: 'admin.tutors.profile' }">
+        <router-link :to="{ name: 'admin.tutors.profile' }">
+          <a-button class="me-sm-2 mb-2">
             <span>Trở về</span>
-          </router-link>
-        </a-button>
+          </a-button>
+        </router-link>
+        <router-link
+          :to="{
+            name: 'admin.tutors.profile.edit',
+            params: { id: tutorProfile.id },
+          }"
+        >
+          <a-button v-if="!status" type="primary" class="me-sm-2 mb-2">
+            <span class="button-with-icon">
+              <FormOutlined class="me-1" />
+              Cập nhật hồ sơ ngay!
+            </span>
+          </a-button>
+        </router-link>
       </div>
     </div>
   </a-card>
@@ -203,6 +206,7 @@ import { useRoute } from "vue-router";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
 import TutorService from "@/services/tutor.service";
 import message from "ant-design-vue/es/message";
+import { FormOutlined } from "@ant-design/icons-vue";
 
 useMenuAdmin().onSelectedKeys(["admin-tutors-profile"]);
 

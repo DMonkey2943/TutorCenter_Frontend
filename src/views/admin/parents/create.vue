@@ -75,13 +75,16 @@
         </div> -->
         <div class="row mt-1">
           <div class="col-12 d-grid d-sm-flex justify-content-sm-end mx-auto">
-            <a-button class="me-sm-2 mb-2">
-              <router-link :to="{ name: 'admin.parents' }">
+            <router-link :to="{ name: 'admin.parents' }">
+              <a-button class="me-sm-2 mb-2">
                 <span>Hủy</span>
-              </router-link>
-            </a-button>
+              </a-button>
+            </router-link>
             <a-button type="primary" html-type="submit" @click="createParent">
-              <span>Lưu</span>
+              <span class="button-with-icon">
+                <SaveFilled class="me-1" />
+                Lưu
+              </span>
             </a-button>
           </div>
         </div>
@@ -93,10 +96,13 @@
 import { watch, ref, reactive, toRefs } from "vue";
 import { useRouter } from "vue-router";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
-import AuthService from "@/services/auth.service";
+import createAuthService from "@/services/auth.service";
 import message from "ant-design-vue/es/message";
+import { SaveFilled } from "@ant-design/icons-vue";
 
 useMenuAdmin().onSelectedKeys(["admin-parents"]);
+
+const AuthService = createAuthService("/api");
 
 const router = useRouter();
 const parent = reactive({

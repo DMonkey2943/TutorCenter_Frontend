@@ -8,7 +8,7 @@
         style="max-width: 600px"
       >
         <h1 class="mb-2">Lớp đã đăng ký nhận dạy</h1>
-        <p>
+        <p class="fs-6">
           Trung tâm gia sư Cần Thơ thường xuyên cập nhật nhiều lớp dạy kèm mới
           mỗi ngày.
         </p>

@@ -2,9 +2,14 @@
   <a-card title="QUẢN LÝ PHỤ HUYNH" style="width: 100%">
     <div class="row mb-3">
       <div class="col-12 d-flex justify-content-end">
-        <a-button type="primary">
-          <router-link :to="{ name: 'admin.parents.create' }">Thêm</router-link>
-        </a-button>
+        <router-link :to="{ name: 'admin.parents.create' }">
+          <a-button type="primary">
+            <span class="button-with-icon">
+              <PlusOutlined class="me-1" />
+              Thêm
+            </span>
+          </a-button>
+        </router-link>
       </div>
     </div>
     <div class="row">
@@ -21,7 +26,7 @@
                 :to="{ name: 'admin.parents.edit', params: { id: record.id } }"
               >
                 <a-button type="primary" class="me-0 me-sm-2 mb-2 mb-sm-0">
-                  Sửa
+                  <EditOutlined class="d-flex" />
                 </a-button>
               </router-link>
               <span>
@@ -30,7 +35,7 @@
                   type="primary"
                   danger
                 >
-                  Xóa
+                  <DeleteOutlined class="d-flex" />
                 </a-button>
               </span>
             </template>
@@ -47,6 +52,11 @@ import { useMenuAdmin } from "@/stores/use-menu-admin";
 import ParentService from "@/services/parent.service";
 import { Modal } from "ant-design-vue";
 import message from "ant-design-vue/es/message";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+} from "@ant-design/icons-vue";
 
 useMenuAdmin().onSelectedKeys(["admin-parents"]);
 

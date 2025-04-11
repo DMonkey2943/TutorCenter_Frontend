@@ -66,8 +66,8 @@
                   params: { id: record.id },
                 }"
               >
-                <a-button type="primary" class="me-0 me-sm-2 mb-2 mb-sm-0">
-                  Xem
+                <a-button class="me-0 me-sm-2 mb-2 mb-sm-0">
+                  <i class="fa fa-eye" aria-hidden="true"></i>
                 </a-button>
               </router-link>
               <router-link
@@ -77,7 +77,7 @@
                 }"
               >
                 <a-button type="primary" class="me-0 me-sm-2 mb-2 mb-sm-0">
-                  Sửa
+                  <EditOutlined class="d-flex" />
                 </a-button>
               </router-link>
             </template>
@@ -95,6 +95,7 @@ import TutorService from "@/services/tutor.service";
 import { Modal } from "ant-design-vue";
 import message from "ant-design-vue/es/message";
 import { useRoute, useRouter } from "vue-router";
+import { EditOutlined } from "@ant-design/icons-vue";
 
 useMenuAdmin().onSelectedKeys(["admin-tutors-profile"]);
 

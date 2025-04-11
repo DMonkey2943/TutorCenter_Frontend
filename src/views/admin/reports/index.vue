@@ -48,7 +48,7 @@
                 class="me-0 me-sm-2 mb-2 mb-sm-0"
                 @click="showReportModal(record.id)"
               >
-                Xem chi tiết
+                <i class="fa fa-eye" aria-hidden="true"></i>
               </a-button>
             </template>
           </template>
@@ -63,6 +63,8 @@
       :confirmLoading="confirmLoading"
       @cancel="handleModalCancel"
       width="800px"
+      cancelText="Hủy"
+      okText="Lưu"
     >
       <div v-if="reportDetail">
         <div class="report-content">
