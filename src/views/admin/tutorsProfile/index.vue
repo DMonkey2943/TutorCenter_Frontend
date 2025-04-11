@@ -21,13 +21,29 @@
       </div>
     </div>
 
+    <div class="row">      
+        <!-- Thêm TheInputSearch ở đây -->
+        <TheInputSearch
+          v-model="searchText"
+          placeholder="Tìm kiếm theo họ tên, chuyên ngành, môn dạy..."
+          @submit="handleSearch"
+          @clear="handleClearSearch"
+          :loading="searchLoading"
+        />
+    </div>
+
     <div class="row">
       <div class="col-12">
         <a-table
-          :dataSource="tutors"
+          :dataSource="filteredTutors"
           :columns="columns"
           :scroll="{ x: 576 }"
           :loading="loading"
+          :pagination="{ 
+            pageSizeOptions: ['10', '20', '50'], 
+            showSizeChanger: true,
+            showTotal: (total) => `Tổng ${total} hồ sơ gia sư` 
+          }"
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'subjects'">
@@ -38,28 +54,25 @@
             </template>
             <template v-if="column.key === 'status'">
               <span v-if="record.profile_status !== null">
-                <span
+                <a-tag
                   v-if="record.profile_status == 0"
-                  class="px-2 py-1 rounded badge text-bg-warning"
-                  >Chờ duyệt</span
-                >
-                <span
+                  color="warning"
+                >Chờ duyệt</a-tag>
+                <a-tag
                   v-else-if="record.profile_status == 1"
-                  class="px-2 py-1 rounded badge text-bg-success"
-                  >Đã duyệt</span
-                >
-                <span v-else class="px-2 py-1 rounded badge text-bg-danger"
-                  >Không đạt</span
-                >
+                  color="success"
+                >Đã duyệt</a-tag>
+                <a-tag
+                  v-else
+                  color="error"
+                >Không đạt</a-tag>
               </span>
-              <span v-else class="px-2 py-1 rounded badge text-bg-info"
-                >Chưa tạo</span
-              >
+              <a-tag
+                v-else
+                color="processing"
+              >Chưa tạo</a-tag>
             </template>
             <template v-if="column.key === 'action'">
-              <!-- <a-button type="primary" @click="getTutorProfile(record.id)"
-                >Xem</a-button
-              > -->
               <router-link
                 :to="{
                   name: 'admin.tutors.profile.detail',
@@ -67,7 +80,7 @@
                 }"
               >
                 <a-button class="me-0 me-sm-2 mb-2 mb-sm-0">
-                  <i class="fa fa-eye" aria-hidden="true"></i>
+                  <EyeOutlined class="d-flex" />
                 </a-button>
               </router-link>
               <router-link
@@ -89,13 +102,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
 import TutorService from "@/services/tutor.service";
 import { Modal } from "ant-design-vue";
 import message from "ant-design-vue/es/message";
 import { useRoute, useRouter } from "vue-router";
-import { EditOutlined } from "@ant-design/icons-vue";
+import { EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons-vue";
+import TheInputSearch from "@/components/TheInputSearch.vue";
 
 useMenuAdmin().onSelectedKeys(["admin-tutors-profile"]);
 
@@ -103,10 +117,13 @@ const route = useRoute();
 const router = useRouter();
 
 const tutors = ref([]);
+const allTutors = ref([]); // Lưu trữ danh sách đầy đủ để tìm kiếm
 const tutorProfile = ref({});
 const open = ref(false);
 const selectedStatus = ref(null);
 const loading = ref(false);
+const searchLoading = ref(false);
+const searchText = ref(''); // Biến lưu từ khóa tìm kiếm
 
 // Danh sách các status text hợp lệ
 const validStatusValues = ["pending", "failed", "ok", "not_created"];
@@ -133,11 +150,10 @@ const columns = [
     dataIndex: "id",
     key: "id",
     width: "5%",
-    // ellipsis: true,
   },
   {
     title: "Họ tên",
-    dataIndex: ["user", "name"], // Sử dụng mảng để truy cập nested object
+    dataIndex: ["user", "name"],
     key: "name",
   },
   {
@@ -149,7 +165,6 @@ const columns = [
     title: "Chuyên ngành",
     dataIndex: "major",
     key: "major",
-    // ellipsis: true,
   },
   {
     title: "Môn dạy",
@@ -174,11 +189,41 @@ const columns = [
   },
 ];
 
+// Computed property để lọc danh sách tutors theo từ khóa tìm kiếm
+const filteredTutors = computed(() => {
+  if (!searchText.value) return tutors.value;
+  
+  const searchLower = searchText.value.toLowerCase();
+  return tutors.value.filter(tutor => {
+    // Tìm theo họ tên
+    const userName = tutor.user?.name?.toLowerCase() || '';
+    
+    // Tìm theo chuyên ngành
+    const major = tutor.major?.toLowerCase() || '';
+    
+    // Tìm theo trình độ
+    const level = tutor.level?.name?.toLowerCase() || '';
+    
+    // Tìm theo môn dạy
+    const subjects = tutor.subjects?.map(s => s.name?.toLowerCase()).join(' ') || '';
+    
+    // Tìm theo khối lớp
+    const grades = tutor.grades?.map(g => g.name?.toLowerCase()).join(' ') || '';
+    
+    return userName.includes(searchLower) || 
+           major.includes(searchLower) || 
+           level.includes(searchLower) || 
+           subjects.includes(searchLower) || 
+           grades.includes(searchLower);
+  });
+});
+
 const getAllTutors = async (statusText = null) => {
   loading.value = true;
   try {
     const response = await TutorService.index(statusText);
     tutors.value = response.data;
+    allTutors.value = response.data; // Lưu danh sách đầy đủ không lọc
   } catch (error) {
     console.log(error);
     message.error("Có lỗi xảy ra khi tải danh sách hồ sơ gia sư");
@@ -189,6 +234,7 @@ const getAllTutors = async (statusText = null) => {
 
 const handleStatusChange = (value) => {
   selectedStatus.value = value;
+  searchText.value = ''; // Reset từ khóa tìm kiếm khi thay đổi bộ lọc trạng thái
 
   // Cập nhật URL với status text
   if (value === null) {
@@ -198,6 +244,26 @@ const handleStatusChange = (value) => {
   }
 
   getAllTutors(value);
+};
+
+// Hàm xử lý tìm kiếm
+const handleSearch = () => {
+  // Nếu muốn tìm kiếm qua API thay vì lọc phía client
+  // Có thể gọi API search ở đây với searchText
+  // Hoặc dùng lọc phía client như đã triển khai
+  console.log("Tìm kiếm với từ khóa:", searchText.value);
+};
+
+// Hàm xử lý khi xóa tìm kiếm
+const handleClearSearch = () => {
+  // Reset từ khóa tìm kiếm
+  searchText.value = '';
+  
+  // Trong trường hợp đã thực hiện lọc client-side bằng computed property
+  // thì không cần làm gì thêm ở đây
+  
+  // Trong trường hợp đã gọi API tìm kiếm, cần phải tải lại dữ liệu gốc
+  // tutors.value = allTutors.value;
 };
 
 onMounted(() => {

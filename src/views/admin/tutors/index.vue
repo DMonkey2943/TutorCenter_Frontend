@@ -12,27 +12,49 @@
         </router-link>
       </div>
     </div>
+
+    <div class="row">
+      <TheInputSearch
+        v-model="searchText"
+        placeholder="Tìm kiếm theo họ tên, email hoặc SĐT"
+        @submit="handleSearch"
+        @clear="handleClearSearch"
+        :loading="loading"
+      />
+    </div>
+    
     <div class="row">
       <div class="col-12">
-        <a-table :dataSource="tutors" :columns="columns" :scroll="{ x: 576 }">
+        <a-table
+          :dataSource="filteredTutors"
+          :columns="columns"
+          :scroll="{ x: 576 }"
+          :loading="loading"
+          :pagination="{
+            pageSizeOptions: ['10', '20', '50'],
+            showSizeChanger: true,
+            showTotal: (total) => `Tổng ${total} gia sư`,
+          }"
+        >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'status'">
               <span v-if="record.profile_status !== null">
-                <span v-if="record.profile_status == 0" class="text-warning"
-                  >Chờ duyệt</span
+                <a-tag v-if="record.profile_status == 0" color="warning"
+                  >Chờ duyệt</a-tag
                 >
-                <span
-                  v-else-if="record.profile_status == 1"
-                  class="text-success"
-                  >Đã duyệt</span
+                <a-tag v-else-if="record.profile_status == 1" color="success"
+                  >Đã duyệt</a-tag
                 >
-                <span v-else class="text-danger">Không đạt</span>
+                <a-tag v-else color="error">Không đạt</a-tag>
               </span>
-              <span v-else class="text-info">Chưa tạo</span>
+              <a-tag v-else color="processing">Chưa tạo</a-tag>
             </template>
             <template v-if="column.key === 'action'">
               <router-link
-                :to="{ name: 'admin.tutors.edit', params: { id: record.id } }"
+                :to="{
+                  name: 'admin.tutors.edit',
+                  params: { id: record.id },
+                }"
               >
                 <a-button type="primary" class="me-0 me-sm-2 mb-2 mb-sm-0">
                   <EditOutlined class="d-flex" />
@@ -52,7 +74,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
 import TutorService from "@/services/tutor.service";
 import { Modal } from "ant-design-vue";
@@ -62,10 +84,14 @@ import {
   DeleteOutlined,
   PlusOutlined,
 } from "@ant-design/icons-vue";
+import TheInputSearch from "@/components/TheInputSearch.vue";
 
 useMenuAdmin().onSelectedKeys(["admin-tutors"]);
 
 const tutors = ref([]);
+const allTutors = ref([]); // Lưu trữ danh sách đầy đủ không lọc
+const loading = ref(false);
+const searchText = ref("");
 
 const columns = [
   {
@@ -75,7 +101,7 @@ const columns = [
   },
   {
     title: "Họ tên",
-    dataIndex: ["user", "name"], // Sử dụng mảng để truy cập nested object
+    dataIndex: ["user", "name"],
     key: "name",
   },
   {
@@ -100,30 +126,66 @@ const columns = [
   },
 ];
 
+const filteredTutors = computed(() => {
+  if (!searchText.value) return tutors.value;
+
+  const searchLower = searchText.value.toLowerCase();
+  return tutors.value.filter((tutor) => {
+    const userName = tutor.user?.name?.toLowerCase() || "";
+    const userEmail = tutor.user?.email?.toLowerCase() || "";
+    const userPhone = tutor.user?.phone?.toLowerCase() || "";
+
+    return (
+      userName.includes(searchLower) ||
+      userEmail.includes(searchLower) ||
+      userPhone.includes(searchLower)
+    );
+  });
+});
+
 const getAllTutors = async () => {
   try {
+    loading.value = true;
     const response = await TutorService.index();
     tutors.value = response.data;
+    allTutors.value = response.data; // Lưu danh sách đầy đủ
   } catch (error) {
     console.log(error);
+    message.error("Đã xảy ra lỗi khi tải danh sách gia sư");
+  } finally {
+    loading.value = false;
   }
+};
+
+const handleSearch = () => {
+  // Nếu muốn tìm kiếm qua API thay vì lọc phía client
+  // Có thể gọi API search ở đây với searchText
+  // Hoặc dùng lọc phía client như đã triển khai
+  console.log("Tìm kiếm với từ khóa:", searchText.value);
+};
+
+const handleClearSearch = () => {
+  // Reset lại danh sách khi xóa tìm kiếm
+  tutors.value = allTutors.value;
 };
 
 const deleteTutor = async (id) => {
   Modal.confirm({
     title: "Bạn có chắc sẽ xóa gia sư này?",
-    // icon: createVNode(ExclamationCircleOutlined),
-    // content: "Some descriptions",
     okText: "Xóa",
     okType: "danger",
     cancelText: "Hủy",
     async onOk() {
       try {
+        loading.value = true;
         await TutorService.destroy(id);
-        getAllTutors();
+        await getAllTutors();
         message.success("Xóa gia sư thành công");
       } catch (error) {
         console.log(error);
+        message.error("Đã xảy ra lỗi khi xóa gia sư");
+      } finally {
+        loading.value = false;
       }
     },
     onCancel() {
@@ -132,7 +194,7 @@ const deleteTutor = async (id) => {
   });
 };
 
-// onMounted(() => {
-getAllTutors();
-// });
+onMounted(() => {
+  getAllTutors();
+});
 </script>

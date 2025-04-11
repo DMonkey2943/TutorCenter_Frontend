@@ -12,14 +12,33 @@
         </router-link>
       </div>
     </div>
+
+    <div class="row">
+      <TheInputSearch
+        v-model="searchText"
+        placeholder="Tìm kiếm theo họ tên, email hoặc SĐT"
+        @submit="handleSearch"
+        @clear="handleClearSearch"
+        :loading="loading"
+      />
+    </div>
+
     <div class="row">
       <div class="col-12">
-        <a-table :dataSource="parents" :columns="columns" :scroll="{ x: 576 }">
+        <a-table
+          :dataSource="filteredParents"
+          :columns="columns"
+          :scroll="{ x: 576 }"
+          :loading="loading"
+          :pagination="{
+            pageSizeOptions: ['10', '20', '50'],
+            showSizeChanger: true,
+            showTotal: (total) => `Tổng ${total} phụ huynh`,
+          }"
+        >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'status'">
-              <span v-if="record.blocked_at" class="text-danger">
-                Tạm khóa
-              </span>
+              <a-tag v-if="record.blocked_at" color="error">Tạm khóa</a-tag>
             </template>
             <template v-if="column.key === 'action'">
               <router-link
@@ -47,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
 import ParentService from "@/services/parent.service";
 import { Modal } from "ant-design-vue";
@@ -57,10 +76,14 @@ import {
   DeleteOutlined,
   PlusOutlined,
 } from "@ant-design/icons-vue";
+import TheInputSearch from "@/components/TheInputSearch.vue";
 
 useMenuAdmin().onSelectedKeys(["admin-parents"]);
 
 const parents = ref([]);
+const allParents = ref([]); // Lưu trữ danh sách đầy đủ không lọc
+const loading = ref(false);
+const searchText = ref("");
 
 const columns = [
   {
@@ -95,13 +118,47 @@ const columns = [
   },
 ];
 
+const filteredParents = computed(() => {
+  if (!searchText.value) return parents.value;
+
+  const searchLower = searchText.value.toLowerCase();
+  return parents.value.filter((parent) => {
+    const userName = parent.user?.name?.toLowerCase() || "";
+    const userEmail = parent.user?.email?.toLowerCase() || "";
+    const userPhone = parent.user?.phone?.toLowerCase() || "";
+
+    return (
+      userName.includes(searchLower) ||
+      userEmail.includes(searchLower) ||
+      userPhone.includes(searchLower)
+    );
+  });
+});
+
 const getAllParents = async () => {
   try {
+    loading.value = true;
     const response = await ParentService.index();
     parents.value = response.data;
+    allParents.value = response.data; // Lưu danh sách đầy đủ
   } catch (error) {
     console.log(error);
+    message.error("Đã xảy ra lỗi khi tải danh sách gia sư");
+  } finally {
+    loading.value = false;
   }
+};
+
+const handleSearch = () => {
+  // Nếu muốn tìm kiếm qua API thay vì lọc phía client
+  // Có thể gọi API search ở đây với searchText
+  // Hoặc dùng lọc phía client như đã triển khai
+  console.log("Tìm kiếm với từ khóa:", searchText.value);
+};
+
+const handleClearSearch = () => {
+  // Reset lại danh sách khi xóa tìm kiếm
+  parents.value = allParents.value;
 };
 
 const deleteParent = async (id) => {
@@ -114,11 +171,15 @@ const deleteParent = async (id) => {
     cancelText: "Hủy",
     async onOk() {
       try {
+        loading.value = true;
         await ParentService.destroy(id);
-        getAllParents();
+        await getAllParents();
         message.success("Xóa phụ huynh thành công");
       } catch (error) {
         console.log(error);
+        message.error("Đã xảy ra lỗi khi xóa gia sư");
+      } finally {
+        loading.value = false;
       }
     },
     onCancel() {
@@ -127,7 +188,7 @@ const deleteParent = async (id) => {
   });
 };
 
-// onMounted(() => {
-getAllParents();
-// });
+onMounted(() => {
+  getAllParents();
+});
 </script>

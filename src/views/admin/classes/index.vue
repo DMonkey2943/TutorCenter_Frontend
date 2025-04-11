@@ -29,37 +29,59 @@
         </router-link>
       </div>
     </div>
+
+    <div class="row">
+      <!-- Thêm TheInputSearch ở đây -->
+      <TheInputSearch
+        v-model="searchText"
+        placeholder="Tìm kiếm theo họ tên, chuyên ngành, môn dạy..."
+        @submit="handleSearch"
+        @clear="handleClearSearch"
+        :loading="searchLoading"
+      />
+    </div>
+
     <div class="row">
       <div class="col-12">
         <a-table
-          :dataSource="classes"
+          :dataSource="filteredClasses"
           :columns="columns"
           :scroll="{ x: 576 }"
           :loading="loading"
+          :pagination="{
+            pageSizeOptions: ['10', '20', '50'],
+            showSizeChanger: true,
+            showTotal: (total) => `Tổng ${total} lớp học`,
+          }"
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'subjects'">
               <span>{{ record.subjects.map((s) => s.name).join(", ") }}</span>
             </template>
             <template v-if="column.key === 'status'">
-              <span
-                v-if="record.status == 0"
-                class="px-2 py-1 rounded badge text-bg-warning"
-                >Chưa giao</span
-              >
-              <span
+              <a-tag v-if="record.status == 0" color="warning">
+                Chưa giao
+              </a-tag>
+              <!-- <span
                 v-else-if="record.status == 1"
                 class="px-2 py-1 rounded badge text-bg-success"
                 >Đã giao</span
+              > -->
+              <a-tag v-else-if="record.status == 1" color="success"
+                >Đã giao</a-tag
               >
-              <span
+              <!-- <span
                 v-else-if="record.status == 2"
                 class="px-2 py-1 rounded badge text-bg-primary"
                 >Đã kết thúc</span
-              >
-              <span v-else class="px-2 py-1 rounded badge text-bg-danger"
+              > -->
+              <a-tag v-else-if="record.status == 2" color="default">
+                Đã kết thúc
+              </a-tag>
+              <!-- <span v-else class="px-2 py-1 rounded badge text-bg-danger"
                 >Đã hủy</span
-              >
+              > -->
+              <a-tag v-else color="error">Đã hủy</a-tag>
             </template>
             <template v-if="column.key === 'action'">
               <router-link
@@ -96,7 +118,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { useMenuAdmin } from "@/stores/use-menu-admin";
 import ClassService from "@/services/class.service";
 import { Modal } from "ant-design-vue";
@@ -107,6 +129,7 @@ import {
   DeleteOutlined,
   PlusOutlined,
 } from "@ant-design/icons-vue";
+import TheInputSearch from "@/components/TheInputSearch.vue";
 
 useMenuAdmin().onSelectedKeys(["admin-classes"]);
 
@@ -114,9 +137,12 @@ const route = useRoute();
 const router = useRouter();
 
 const classes = ref([]);
+const allClasses = ref([]); // Lưu trữ danh sách đầy đủ để tìm kiếm
 const open = ref(false);
 const selectedStatus = ref(null);
 const loading = ref(false);
+const searchLoading = ref(false);
+const searchText = ref(""); // Biến lưu từ khóa tìm kiếm
 
 // Danh sách các status text hợp lệ
 const validStatusValues = ["pending", "assigned", "ended", "canceled"];
@@ -166,7 +192,7 @@ const columns = [
     dataIndex: "status",
     key: "status",
     ellipsis: true,
-    width: "10%",
+    width: "12%",
   },
   {
     title: "Tùy chọn",
@@ -175,11 +201,38 @@ const columns = [
   },
 ];
 
+// Computed property để lọc danh sách classes theo từ khóa tìm kiếm
+const filteredClasses = computed(() => {
+  if (!searchText.value) return classes.value;
+
+  const searchLower = searchText.value.toLowerCase();
+  return classes.value.filter((classItem) => {
+    // Tìm theo phụ huynh
+    const parentName = classItem.parent?.user?.name?.toLowerCase() || "";
+
+    // Tìm theo môn dạy
+    const subjects =
+      classItem.subjects?.map((s) => s.name?.toLowerCase()).join(" ") || "";
+
+    // Tìm theo khối lớp
+    const grades =
+      classItem.grades?.map((g) => g.name?.toLowerCase()).join(" ") || "";
+
+    return (
+      parentName.includes(searchLower) ||
+      subjects.includes(searchLower) ||
+      grades.includes(searchLower)
+    );
+  });
+});
+
 const getAllClasses = async (statusText = null) => {
   loading.value = true;
   try {
     const response = await ClassService.index(statusText);
     classes.value = response.data;
+    allClasses.value = response.data; // Lưu danh sách đầy đủ không lọc
+    console.log(classes.value);
   } catch (error) {
     console.log(error);
     message.error("Có lỗi xảy ra khi tải danh sách lớp học");
@@ -190,6 +243,7 @@ const getAllClasses = async (statusText = null) => {
 
 const handleStatusChange = (value) => {
   selectedStatus.value = value;
+  searchText.value = ""; // Reset từ khóa tìm kiếm khi thay đổi bộ lọc trạng thái
 
   // Cập nhật URL với status text
   if (value === null) {
@@ -199,6 +253,26 @@ const handleStatusChange = (value) => {
   }
 
   getAllClasses(value);
+};
+
+// Hàm xử lý tìm kiếm
+const handleSearch = () => {
+  // Nếu muốn tìm kiếm qua API thay vì lọc phía client
+  // Có thể gọi API search ở đây với searchText
+  // Hoặc dùng lọc phía client như đã triển khai
+  console.log("Tìm kiếm với từ khóa:", searchText.value);
+};
+
+// Hàm xử lý khi xóa tìm kiếm
+const handleClearSearch = () => {
+  // Reset từ khóa tìm kiếm
+  searchText.value = "";
+
+  // Trong trường hợp đã thực hiện lọc client-side bằng computed property
+  // thì không cần làm gì thêm ở đây
+
+  // Trong trường hợp đã gọi API tìm kiếm, cần phải tải lại dữ liệu gốc
+  // tutors.value = allTutors.value;
 };
 
 const deleteClass = async (id) => {
