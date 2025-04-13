@@ -614,6 +614,7 @@ const submitReport = async () => {
     message.error("Không thể gửi báo cáo: " + error.message);
   } finally {
     reportForm.value.loading = false;
+    await getTutorReportsForClass(classDetail.id);
   }
 };
 
@@ -625,7 +626,7 @@ const getTutorReportsForClass = async (classId) => {
     tutorReports.value = result.data;
     console.log(tutorReports.value);
   } catch (error) {
-    message.error("Không thể gửi báo cáo: " + error.message);
+    message.error("Không thể lấy các báo cáo: " + error.message);
   }
 };
 </script>
